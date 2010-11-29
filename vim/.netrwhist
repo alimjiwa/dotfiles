@@ -1,0 +1,5 @@
+let g:netrw_dirhistmax  =10
+let g:netrw_dirhist_cnt =3
+let g:netrw_dirhist_1='scp://y9l6@ssh-linux.ece.ubc.ca/'
+let g:netrw_dirhist_2='scp://y9l6@ssh-linux.ece.ubc.ca/eece476/'
+let g:netrw_dirhist_3='scp://y9l6@ssh-linux.ece.ubc.ca/eece476/assn3/'

@@ -1,0 +1,10 @@
+turk=/Users/rob/turk CD=. {
+ CONTRIBUTERS
+ LICENSE
+ Manifest.in
+ README
+ setup.py
+ turk.pid
+ turk.project
+
+}
