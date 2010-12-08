@@ -6,6 +6,9 @@ call pathogen#helptags()
 "Key Bindings
 let mapleader = ","
 
+" Edit .vimrc
+map <Leader>v :e $MYVIMRC<CR>
+
 " Tab cycles buffers
 map <Tab> :bn<CR>
 map <S-Tab> :bp<CR>
@@ -39,6 +42,11 @@ map <Leader>t :NERDTreeToggle<CR>
 " New scratch buffer
 map <Leader>n :Sscratch<CR>
 map <Leader>N :Scratch<CR>
+
+" Crontab hijinks
+au BufEnter /private/tmp/crontab.* setl backupcopy=yes
+set backupskip=/tmp/*,/private/tmp/*
+
 
 if has('python')
 python << EOF

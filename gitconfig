@@ -1,0 +1,7 @@
+[user]
+	name = robbles
+	email = odwyerrob@gmail.com
+[core]
+	autocrlf = input
+[merge]
+	tool = vimdiff
