@@ -55,7 +55,7 @@ import sys, os
 os.environ['DJANGO_SETTINGS_MODULE'] = 'settings'
 
 # Other site packages
-sys.path.append('/opt/local/Library/Frameworks/Python.framework/Versions/2.6/lib/python2.6/site-packages')
+#sys.path.append('/opt/local/Library/Frameworks/Python.framework/Versions/2.6/lib/python2.6/site-packages')
 
 EOF
 endif
@@ -67,18 +67,23 @@ else
     let g:snippetsEmu_key = "<C-S-Tab>"
 endif
 
+" Tasks
+let g:tlWindowPosition = 1
+map <leader>T <Plug>TaskList
+
 " Autocommands and filetype detection
 "au BufReadPost *.project bd | Project <afile>:p
 au BufReadPost *.less set ft=less
 au BufReadPost buildfile set ft=ruby
 au BufNewFile,BufRead *.pde	setf arduino
 au BufNewFile,BufRead *.html,*.htm,*.shtml,*.stm setf htmldjango
-au BufNewFile,BufRead *.txt set textwidth=80
 autocmd FileType python set omnifunc=pythoncomplete#Complete
 autocmd FileType javascript set omnifunc=javascriptcomplete#CompleteJS
 autocmd FileType html set omnifunc=htmlcomplete#CompleteTags
 autocmd FileType css set omnifunc=csscomplete#CompleteCSS
 autocmd FileType rst set textwidth=80
+autocmd FileType txt set textwidth=80
+autocmd FileType markdown set textwidth=80
 autocmd Filetype java setlocal omnifunc=javacomplete#Complete 
 
 " Commands
@@ -141,6 +146,7 @@ set smartcase " Do smart case matching
 set hidden " Hide buffers when they are abandoned
 set mouse=a " Enable mouse usage (all modes)
 syntax on
+set textwidth=0
 set visualbell
 set softtabstop=4
 set expandtab
@@ -158,7 +164,8 @@ set viminfo+=h
 set nocp
 filetype plugin on
 set switchbuf=useopen,usetab
-set foldmethod=manual
+"set foldmethod=manual
+set foldmethod=marker
 set foldnestmax=1
 set nowrap
 set bs=indent,eol,start

@@ -13,6 +13,8 @@ alias apt-list="dpkg --get-selections"
 alias pdb="python -m pdb"
 alias install="brew install"
 alias installh="brew install --HEAD"
+alias linelen='cut -c -$COLUMNS'
+alias webserver="python -m SimpleHTTPServer 2>/dev/null 1>/dev/null &"
 
 # unnecessary masochism
 alias sls="sl"
@@ -36,7 +38,8 @@ export PS1='\[\033[01;32m\]\u@\h: \[\033[01;36m\]\W/ \[\033[00m\]$ '
 
 #colorize output from ls
 export TERM='xterm-color'
-alias ls='ls --color=auto'
+#alias ls="`brew --prefix`/bin/gls --color=auto"
+alias ls="ls --color=auto"
 
 # VCS editors
 export EDITOR="vim"
@@ -54,4 +57,9 @@ alias monitorhttp="sudo tcpdump -A -i en1 'tcp port 80 and (((ip[2:2] - ((ip[0]&
 
 # Makes Django recognize settings.py in current directory (why the fuck is this not default?)
 export DJANGO_SETTINGS_MODULE=settings
+
+# Delete all history lines matching each new command
+export HISTCONTROL=erasedups
+# Don't store commands matching the previous line in history
+#export HISTCONTROL=ignoredups
 

@@ -40,3 +40,6 @@
 [submodule "vim/bundle/vim-fugitive"]
 	path = vim/bundle/vim-fugitive
 	url = git://github.com/tpope/vim-fugitive.git
+[submodule "vim/bundle/vim-task-list"]
+	path = vim/bundle/vim-task-list
+	url = https://github.com/vim-scripts/TaskList.vim.git
