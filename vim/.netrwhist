@@ -1,5 +1,4 @@
 let g:netrw_dirhistmax  =10
-let g:netrw_dirhist_cnt =3
-let g:netrw_dirhist_1='scp://y9l6@ssh-linux.ece.ubc.ca/'
-let g:netrw_dirhist_2='scp://y9l6@ssh-linux.ece.ubc.ca/eece476/'
-let g:netrw_dirhist_3='scp://y9l6@ssh-linux.ece.ubc.ca/eece476/assn3/'
+let g:netrw_dirhist_cnt =2
+let g:netrw_dirhist_1='/Users/rob/.virtualenvs/uiforms/lib/python2.7/site-packages/django_registration-0.7-py2.7.egg-info'
+let g:netrw_dirhist_2='/Users/rob/Documents/Jekyll/gh_pages/_scripts'

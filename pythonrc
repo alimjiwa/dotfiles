@@ -56,3 +56,8 @@ except:
 # import useful libraries
 import sys, os, re
 
+# Mess with the promptsj
+sys.ps1 = '\033[92m>>> \033[0m'
+sys.ps2 = '\033[90m   .\033[0m'
+
+

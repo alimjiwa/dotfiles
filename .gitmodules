@@ -43,3 +43,18 @@
 [submodule "vim/bundle/vim-task-list"]
 	path = vim/bundle/vim-task-list
 	url = https://github.com/vim-scripts/TaskList.vim.git
+[submodule "vim/bundle/processing"]
+	path = vim/bundle/processing
+	url = git://github.com/vim-scripts/Processing.git
+[submodule "vim/bundle/molokai"]
+	path = vim/bundle/molokai
+	url = https://github.com/vim-scripts/molokai.git
+[submodule "vim/bundle/busybee"]
+	path = vim/bundle/busybee
+	url = https://github.com/vim-scripts/BusyBee.git
+[submodule "vim/bundle/wombat"]
+	path = vim/bundle/wombat
+	url = https://github.com/vim-scripts/Wombat.git
+[submodule "vim/bundle/wombat256"]
+	path = vim/bundle/wombat256
+	url = https://github.com/vim-scripts/wombat256.vim.git

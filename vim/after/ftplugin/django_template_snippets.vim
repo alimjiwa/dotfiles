@@ -20,6 +20,7 @@ exec "Snippet filter {% filter ".st.et." %}<CR>".st.et."<CR>{% endfilter %}".st.
 exec "Snippet block {% block ".st.et." %}<CR>".st.et."<CR>{% endblock %}<CR>".st.et
 exec "Snippet cycle {% cycle ".st.et." as ".st.et." %}".st.et
 exec "Snippet if {% if ".st.et." %}<CR>".st.et."<CR>{% endif %}<CR>".st.et
+exec "Snippet ife {% if ".st.et." %}<CR>".st.et."<CR>{% else %}<CR>".st.et."<CR>{% endif %}<CR>"
 exec "Snippet debug {% debug %}<CR>".st.et
 exec "Snippet ifnotequal {% ifnotequal ".st.et." ".st.et." %}<CR>".st.et."<CR>{% endifnotequal %}<CR>".st.et
 exec "Snippet include {% include ".st.et." %}<CR>".st.et

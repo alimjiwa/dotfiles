@@ -7,17 +7,26 @@ call pathogen#helptags()
 let mapleader = ","
 
 " Edit .vimrc
-map <Leader>v :e $MYVIMRC<CR>
+map <Leader>vv :tabe $MYVIMRC<CR>
 
-" Tab cycles buffers
-map <Tab> :bn<CR>
-map <S-Tab> :bp<CR>
+" [Shift]-Tab cycles tabs
+map <Tab> :tabn<CR>
+map <S-Tab> :tabp<CR>
+map <D-Right> :tabn<CR>
+map <D-Left> :tabp<CR>
+
+" Option/Alt-Left/Right cycles buffers
+au VimEnter * map <A-Right> :bn<CR> | map <A-Left> :bp<CR>
+
+" Ctrl-Space is omni-completion
+inoremap <Nul> <C-x><C-o>
+inoremap <C-Space> <C-x><C-o>
 
 " Toggle line wrap
 map <Leader>w :set wrap!<CR>
 
 " Toggle paste mode
-map <Leader>p :set paste!<CR>
+map <Leader>pp :set paste!<CR>
 
 " Toggle highlight search
 map <Leader>h :set hls!<CR>
@@ -30,14 +39,26 @@ map <Leader>S :%s/
 map <D-r> :!./%<CR>
 
 " Run python programs with leader-P
-"map <Leader>p :!/usr/bin/python %<CR>
+map <Leader>p :!/usr/bin/python %<CR>
 
 " Fuzzy Finder
 map <Leader>f :FufFile<CR>
 map <Leader>b :FufBuffer<CR>
 
+" Tag list
+map <Leader>T :Tlist<CR>
+let Tlist_Close_On_Select=1
+let Tlist_Exit_OnlyWindow=1
+let Tlist_File_Fold_Auto_Close=1
+let Tlist_GainFocus_On_ToggleOpen=1
+
 " NERDtree
 map <Leader>t :NERDTreeToggle<CR>
+let NERDTreeQuitOnOpen=1
+
+" Tasks
+let g:tlWindowPosition = 1
+map <Leader>X <Plug>TaskList
 
 " New scratch buffer
 map <Leader>n :Sscratch<CR>
@@ -47,29 +68,37 @@ map <Leader>N :Scratch<CR>
 au BufEnter /private/tmp/crontab.* setl backupcopy=yes
 set backupskip=/tmp/*,/private/tmp/*
 
-
+" Python scripting
 if has('python')
 python << EOF
+import sys, os, vim
+import ropevim
+
 # Setup Django for model completion
-import sys, os
 os.environ['DJANGO_SETTINGS_MODULE'] = 'settings'
 
-# Other site packages
-#sys.path.append('/opt/local/Library/Frameworks/Python.framework/Versions/2.6/lib/python2.6/site-packages')
+# Add Python paths to vim path to open with `gf`
+for p in sys.path:
+    if os.path.isdir(p):
+        vim.command(r"set path+=%s" % (p.replace(" ", r"\ ")))
+
+# Evaluate Python code under cursor
+def EvaluateCurrentRange(): 
+    eval(compile('\n'.join(vim.current.range),'','exec'),globals()) 
 
 EOF
+map <C-h> :py EvaluateCurrentRange()<CR>
 endif
+
+" Add generated Python library tags
+set tags+=$HOME/.vim/tags/python.ctags
 
 " Snippets
 if has('gui_running')
-    let g:snippetsEmu_key = "<C-Tab>"
+let g:snippetsEmu_key = "<C-Tab>"
 else
-    let g:snippetsEmu_key = "<C-S-Tab>"
+let g:snippetsEmu_key = "<C-S-Tab>"
 endif
-
-" Tasks
-let g:tlWindowPosition = 1
-map <leader>T <Plug>TaskList
 
 " Autocommands and filetype detection
 "au BufReadPost *.project bd | Project <afile>:p
@@ -77,7 +106,6 @@ au BufReadPost *.less set ft=less
 au BufReadPost buildfile set ft=ruby
 au BufNewFile,BufRead *.pde	setf arduino
 au BufNewFile,BufRead *.html,*.htm,*.shtml,*.stm setf htmldjango
-autocmd FileType python set omnifunc=pythoncomplete#Complete
 autocmd FileType javascript set omnifunc=javascriptcomplete#CompleteJS
 autocmd FileType html set omnifunc=htmlcomplete#CompleteTags
 autocmd FileType css set omnifunc=csscomplete#CompleteCSS
@@ -85,6 +113,11 @@ autocmd FileType rst set textwidth=80
 autocmd FileType txt set textwidth=80
 autocmd FileType markdown set textwidth=80
 autocmd Filetype java setlocal omnifunc=javacomplete#Complete 
+autocmd FileType python set omnifunc=pythoncomplete#Complete
+
+" :make for Python
+autocmd BufRead *.py set makeprg=python\ -c\ \"import\ py_compile,sys;\ sys.stderr=sys.stdout;\ py_compile.compile(r'%')\" 
+autocmd BufRead *.py set efm=%C\ %.%#,%A\ \ File\ \"%f\"\\,\ line\ %l%.%#,%Z%[%^\ ]%\\@=%m 
 
 " Commands
 command! -nargs=* W write <args>
@@ -100,15 +133,13 @@ if has('gui_running')
     set selectmode=mouse,key
     set guioptions=egmt
 else
-    colorscheme delek
-    highlight Comment ctermfg=green
+    set t_Co=256
+    "colorscheme delek
+    colorscheme wombat256mod
 endif
 
 " Project
 let g:proj_window_width=32
-
-" Project stuff
-"hi FadedText guifg=#111111
 
 " HTML stuff ( get rid of shitty underlining )
 hi! link htmlLink Normal
@@ -122,12 +153,10 @@ let php_htmlInStrings = 1
 let php_parent_error_close = 1
 let php_parent_error_open = 1
 
-" Uncomment the following to have Vim jump to the last position when
-" reopening a file
+" Jump to the last position when reopening a file
 au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
 
-" Uncomment the following to have Vim load indentation rules and plugins
-" according to the detected filetype.
+" Load indentation rules and plugins according to the detected filetype.
 filetype plugin indent on
 
 " The following are commented out as they cause vim to behave a lot
@@ -136,6 +165,9 @@ map j gj
 map k gk
 if exists('&autochdir')
     set autochdir
+endif
+if exists('&colorcolumn')
+    set colorcolumn=80
 endif
 set noautoread
 set showcmd " Show (partial) command in status line.
@@ -171,6 +203,11 @@ set nowrap
 set bs=indent,eol,start
 set laststatus=2
 set history=500
+set completeopt=menu,menuone
+
+" Split windows open above and to the right
+set splitright
+set nosplitbelow
 
 " No backups for temp files
 set backupskip=/tmp/*,/private/tmp/*" 
@@ -179,19 +216,8 @@ set backupskip=/tmp/*,/private/tmp/*"
 set iskeyword+=-
 set iskeyword+=_
 
-
-" Alter default colorscheme highlighting
-"hi VertSplit guibg=#222222 guifg=#333333
-"hi Folded guibg=Grey20 guifg=Grey80
-"hi Normal ctermfg=grey ctermbg=black
-"hi Visual ctermfg=green ctermbg=black
-"hi Search term=reverse cterm=standout ctermfg=green ctermbg=yellow
-"hi IncSearch term=reverse cterm=standout ctermfg=green ctermbg=yellow
-"hi PmenuSel ctermbg=Green ctermfg=Yellow
-
 if has('python')
 python << EOF
-sys.path += ['/opt/local/Library/Frameworks/Python.framework/Versions/2.6/lib/python2.6/site-packages/aeosa']
 from appscript import *
 import vim
 from time import sleep
@@ -220,7 +246,6 @@ command! ProcessingRun python processing_run()
 
 map <Leader>ac :python arduino_compile()<CR>
 map <Leader>au :python arduino_upload()<CR>
-map <Leader>pr :python processing_run()<CR>
 
 
 
