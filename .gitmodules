@@ -64,3 +64,6 @@
 [submodule "vim/bundle/vwilight/colors"]
 	path = vim/bundle/vwilight/colors
 	url = git@gist.github.com:802416.git
+[submodule "vim/bundle/tabular"]
+	path = vim/bundle/tabular
+	url = git://github.com/godlygeek/tabular.git
