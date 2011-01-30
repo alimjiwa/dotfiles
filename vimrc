@@ -72,7 +72,10 @@ set backupskip=/tmp/*,/private/tmp/*
 if has('python')
 python << EOF
 import sys, os, vim
-import ropevim
+try:
+    import ropevim
+except:
+    pass
 
 # Setup Django for model completion
 os.environ['DJANGO_SETTINGS_MODULE'] = 'settings'
@@ -218,7 +221,10 @@ set iskeyword+=_
 
 if has('python')
 python << EOF
-from appscript import *
+try:
+    from appscript import *
+except:
+    pass
 import vim
 from time import sleep
 
