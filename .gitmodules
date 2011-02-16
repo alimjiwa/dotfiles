@@ -67,3 +67,24 @@
 [submodule "vim/bundle/tabular"]
 	path = vim/bundle/tabular
 	url = git://github.com/godlygeek/tabular.git
+[submodule "vim/bundle/jinja"]
+	path = vim/bundle/jinja
+	url = git://github.com/vim-scripts/Jinja
+[submodule "vim/bundle/snipmate"]
+	path = vim/bundle/snipmate
+	url = https://github.com/robbles/snipMate.git
+[submodule "vim/bundle/snipmate_for_django"]
+	path = vim/bundle/snipmate_for_django
+	url = git://github.com/robhudson/snipmate_for_django.git
+[submodule "vim/bundle/markdown"]
+	path = vim/bundle/markdown
+	url = git://github.com/vim-scripts/Markdown.git
+[submodule "vim/bundle/javascript-indent"]
+	path = vim/bundle/javascript-indent
+	url = git://github.com/vim-scripts/OOP-javascript-indentation.git
+[submodule "vim/bundle/pyflakes"]
+	path = vim/bundle/pyflakes
+	url = https://github.com/vim-scripts/pyflakes.vim.git
+[submodule "vim/bundle/narrow"]
+	path = vim/bundle/narrow
+	url = git://github.com/vim-scripts/narrow--Kramer.git

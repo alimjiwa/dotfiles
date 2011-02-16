@@ -1,1 +1,0 @@
-html_snippets.vim

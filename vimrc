@@ -7,7 +7,11 @@ call pathogen#helptags()
 let mapleader = ","
 
 " Edit .vimrc
-map <Leader>vv :tabe $MYVIMRC<CR>
+map <Leader>V :tabe $MYVIMRC<CR>
+
+" Quickly get out of insert mode without your fingers having to leave the
+" home row (either use 'jj' or 'jk')
+inoremap jj <Esc>
 
 " [Shift]-Tab cycles tabs
 map <Tab> :tabn<CR>
@@ -31,19 +35,37 @@ map <Leader>pp :set paste!<CR>
 " Toggle highlight search
 map <Leader>h :set hls!<CR>
 
-" Easier way of starting find/replace
+" Easier way of starting substitute
 map <Leader>s :s/
 map <Leader>S :%s/
+
+" Tame the quickfix window (open/close using ,f)
+nmap <silent> <leader>f :QFix<CR>
+command! -bang -nargs=? QFix call QFixToggle(<bang>0)
+function! QFixToggle(forced)
+  if exists("g:qfix_win") && a:forced == 0
+    cclose
+    unlet g:qfix_win
+  else
+    copen 10
+    let g:qfix_win = bufnr("$")
+  endif
+endfunction
+
+" Since I never use the ; key anyway, this is a real optimization for almost
+" all Vim commands, since we don't have to press that annoying Shift key that
+" slows the commands down
+nnoremap ; :
+
+" Use ,d (or ,dd or ,dj or 20,dd) to delete a line without adding it to the
+nmap <silent> <leader>d "_d
+vmap <silent> <leader>d "_d
 
 " Run scripts with Cmd-R
 map <D-r> :!./%<CR>
 
 " Run python programs with leader-P
 map <Leader>p :!/usr/bin/python %<CR>
-
-" Fuzzy Finder
-map <Leader>f :FufFile<CR>
-map <Leader>b :FufBuffer<CR>
 
 " Tag list
 map <Leader>T :Tlist<CR>
@@ -96,19 +118,16 @@ endif
 " Add generated Python library tags
 set tags+=$HOME/.vim/tags/python.ctags
 
-" Snippets
-if has('gui_running')
-let g:snippetsEmu_key = "<C-Tab>"
-else
-let g:snippetsEmu_key = "<C-S-Tab>"
-endif
+" snipMate snippets
+let g:snips_author = "Rob O'Dwyer"
 
 " Autocommands and filetype detection
 "au BufReadPost *.project bd | Project <afile>:p
 au BufReadPost *.less set ft=less
 au BufReadPost buildfile set ft=ruby
 au BufNewFile,BufRead *.pde	setf arduino
-au BufNewFile,BufRead *.html,*.htm,*.shtml,*.stm setf htmldjango
+au BufNewFile,BufRead *.wsgi setf python
+
 autocmd FileType javascript set omnifunc=javascriptcomplete#CompleteJS
 autocmd FileType html set omnifunc=htmlcomplete#CompleteTags
 autocmd FileType css set omnifunc=csscomplete#CompleteCSS
@@ -122,6 +141,23 @@ autocmd FileType python set omnifunc=pythoncomplete#Complete
 autocmd BufRead *.py set makeprg=python\ -c\ \"import\ py_compile,sys;\ sys.stderr=sys.stdout;\ py_compile.compile(r'%')\" 
 autocmd BufRead *.py set efm=%C\ %.%#,%A\ \ File\ \"%f\"\\,\ line\ %l%.%#,%Z%[%^\ ]%\\@=%m 
 
+" This function detects, based on HTML content, whether this is a
+" Django template, or a plain HTML file, and sets filetype accordingly
+fun! s:DetectHTMLVariant()
+    let n = 1
+    while n < 50 && n < line("$")
+        " check for django
+        if getline(n) =~ '{%\s*\(extends\|load\|block\|if\|for\|include\|trans\)\>'
+            set ft=htmldjango.html
+            return
+        endif
+        let n = n + 1
+    endwhile
+    " go with html
+    set ft=html
+endfun
+autocmd BufNewFile,BufRead *.html,*.htm call s:DetectHTMLVariant()
+
 " Commands
 command! -nargs=* W write <args>
 command! -nargs=0 Q quit
@@ -129,16 +165,15 @@ command! -nargs=0 Q quit
 if has('gui_running')
     colorscheme wombat
     set background=dark
-    set lines=50
-    set columns=90
+    "set lines=50
+    "set columns=90
     "set guifont=Inconsolata:h14
     set guifont=Droid\ Sans\ Mono:h14
     set selectmode=mouse,key
     set guioptions=egmt
 else
-    set t_Co=256
-    "colorscheme delek
-    colorscheme wombat256mod
+    "set t_Co=256
+    colorscheme delek
 endif
 
 " Project
@@ -172,7 +207,11 @@ endif
 if exists('&colorcolumn')
     set colorcolumn=80
 endif
+if exists('&cursorcolumn') && has('gui_running')
+    set cursorcolumn
+endif
 set noautoread
+set virtualedit=block
 set showcmd " Show (partial) command in status line.
 set showmatch " Show matching brackets.
 set smartcase " Do smart case matching
@@ -218,6 +257,10 @@ set backupskip=/tmp/*,/private/tmp/*"
 " Make - and _ part of a word
 set iskeyword+=-
 set iskeyword+=_
+
+iab lorem Lorem ipsum dolor sit amet, consectetur adipiscing elit
+iab llorem Lorem ipsum dolor sit amet, consectetur adipiscing elit.  Etiam lacus ligula, accumsan id imperdiet rhoncus, dapibus vitae arcu.  Nulla non quam erat, luctus consequat nisi
+iab lllorem Lorem ipsum dolor sit amet, consectetur adipiscing elit.  Etiam lacus ligula, accumsan id imperdiet rhoncus, dapibus vitae arcu.  Nulla non quam erat, luctus consequat nisi.  Integer hendrerit lacus sagittis erat fermentum tincidunt.  Cras vel dui neque.  In sagittis commodo luctus.  Mauris non metus dolor, ut suscipit dui.  Aliquam mauris lacus, laoreet et consequat quis, bibendum id ipsum.  Donec gravida, diam id imperdiet cursus, nunc nisl bibendum sapien, eget tempor neque elit in tortor
 
 if has('python')
 python << EOF
