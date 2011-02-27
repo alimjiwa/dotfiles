@@ -27,7 +27,7 @@ atexit.register(save_history)
 
 readline.parse_and_bind("tab: complete")
 
-del os, atexit, readline, rlcompleter, save_history, historyPath
+del atexit, readline, rlcompleter, save_history, historyPath
 
 # Django auto-setup
 import warnings

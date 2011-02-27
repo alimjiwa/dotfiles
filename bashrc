@@ -18,6 +18,7 @@ alias webserver="python -m SimpleHTTPServer 2>/dev/null 1>/dev/null &"
 
 # Make vim always open in tabs
 alias mvim="mvim -p"
+alias vim="vim -p"
 
 # unnecessary masochism
 alias sls="sl"
