@@ -100,6 +100,13 @@ let Tlist_GainFocus_On_ToggleOpen=1
 map <Leader>t :NERDTreeToggle<CR>
 let NERDTreeQuitOnOpen=1
 
+" ConqueTerm
+let g:ConqueTerm_ToggleKey = '<F8>'
+let g:ConqueTerm_Color = 1
+let g:ConqueTerm_TERM = 'xterm-256'
+let g:ConqueTerm_Syntax = 'bash'
+let g:ConqueTerm_CloseOnEnd = 1
+
 " Tasks
 let g:tlWindowPosition = 1
 map <Leader>X <Plug>TaskList
@@ -130,9 +137,9 @@ except:
 os.environ['DJANGO_SETTINGS_MODULE'] = 'settings'
 
 # Add Python paths to vim path to open with `gf`
-for p in sys.path:
-    if os.path.isdir(p):
-        vim.command(r"set path+=%s" % (p.replace(" ", r"\ ")))
+#for p in sys.path:
+#    if os.path.isdir(p):
+#        vim.command(r"set path+=%s" % (p.replace(" ", r"\ ")))
 
 # Evaluate Python code under cursor
 def EvaluateCurrentRange(): 
@@ -143,17 +150,12 @@ map <C-h> :py EvaluateCurrentRange()<CR>
 endif
 """""""""""""  /Python Code  """""""""""""""""""
 
-
-" Add generated Python library tags
-set tags+=$HOME/.vim/tags/python.ctags
-
 " snipMate snippets
 let g:snips_author = "Rob O'Dwyer"
 
 " Really handy if you often end up running :W<CR> by accident
 command! -nargs=* W write <args>
 command! -nargs=0 Q quit
-
 
 " Autocommands and filetype detection
 "au BufReadPost *.project bd | Project <afile>:p
