@@ -1,5 +1,8 @@
 
 " Pathogen - isolates all plugins inside ~/.vim/bundle like a boss
+if version < 730
+    let g:pathogen_disabled=['gundo']
+endif
 call pathogen#runtime_append_all_bundles() 
 call pathogen#helptags()
 
