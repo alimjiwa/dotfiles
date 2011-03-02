@@ -47,7 +47,7 @@ alias room="turksend 6,8"
 export PS1='\[\033[00m\]\[\033[01;32m\]\u@\h: \[\033[01;36m\]\W/ \[\033[00m\]$ '
 
 #colorize output from ls
-export TERM='xterm-color'
+#export TERM='xterm-color'
 #alias ls="`brew --prefix`/bin/gls --color=auto"
 alias ls="ls --color=auto"
 
@@ -70,6 +70,7 @@ export DJANGO_SETTINGS_MODULE=settings
 
 # Delete all history lines matching each new command
 export HISTCONTROL=erasedups
+export HISTSIZE=10000
 # Don't store commands matching the previous line in history
 #export HISTCONTROL=ignoredups
 

@@ -28,9 +28,13 @@ if has('gui_running')
     " Scrollbars are for the weak-willed, use Ctrl-g instead
     set guioptions=egmt
 else
-    " Set terminal to 256 colors. Slows everything down in iTerm-0.1, not in 2
-    set t_Co=256
-    colorscheme wombat256mod
+    if $TERM == 'xterm-color'
+        " Set terminal to 256 colors. Don't use in iTerm-0.1, it's slow
+        set t_Co=256
+        colorscheme wombat256mod
+    else
+        colorscheme desert
+    endif
 endif
 
 " Quickly get out of insert mode without your fingers having to leave the
@@ -100,6 +104,10 @@ let Tlist_GainFocus_On_ToggleOpen=1
 map <Leader>t :NERDTreeToggle<CR>
 let NERDTreeQuitOnOpen=1
 
+" Gundo
+map <Leader>g :GundoToggle<CR>
+let g:gundo_help=0
+
 " ConqueTerm
 let g:ConqueTerm_ToggleKey = '<F8>'
 let g:ConqueTerm_Color = 1
@@ -136,11 +144,6 @@ except:
 # Setup Django for model completion
 os.environ['DJANGO_SETTINGS_MODULE'] = 'settings'
 
-# Add Python paths to vim path to open with `gf`
-#for p in sys.path:
-#    if os.path.isdir(p):
-#        vim.command(r"set path+=%s" % (p.replace(" ", r"\ ")))
-
 # Evaluate Python code under cursor
 def EvaluateCurrentRange(): 
     eval(compile('\n'.join(vim.current.range),'','exec'),globals()) 
@@ -153,7 +156,7 @@ endif
 " snipMate snippets
 let g:snips_author = "Rob O'Dwyer"
 
-" Really handy if you often end up running :W<CR> by accident
+" Really handy if you often end up doing :W by accident
 command! -nargs=* W write <args>
 command! -nargs=0 Q quit
 
@@ -163,6 +166,7 @@ au BufReadPost *.less set ft=less
 au BufReadPost buildfile set ft=ruby
 au BufNewFile,BufRead *.pde	setf arduino
 au BufNewFile,BufRead *.wsgi setf python
+au BufNewFile,BufRead *.info setf ini
 
 autocmd FileType javascript set omnifunc=javascriptcomplete#CompleteJS
 autocmd FileType html set omnifunc=htmlcomplete#CompleteTags
