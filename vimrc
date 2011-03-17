@@ -1,10 +1,11 @@
 
 " Pathogen - isolates all plugins inside ~/.vim/bundle like a boss
-if version < 730
+if version < 703
     let g:pathogen_disabled=['gundo']
 endif
 call pathogen#runtime_append_all_bundles() 
 call pathogen#helptags()
+
 
 " Root for most key bindings
 let mapleader = ","
@@ -104,7 +105,7 @@ let Tlist_File_Fold_Auto_Close=1
 let Tlist_GainFocus_On_ToggleOpen=1
 
 " NERDtree
-map <Leader>t :NERDTreeToggle<CR>
+map <Leader>f :NERDTreeToggle<CR>
 let NERDTreeQuitOnOpen=1
 
 " Gundo
@@ -125,6 +126,12 @@ map <Leader>X <Plug>TaskList
 " New scratch buffer for notes
 map <Leader>n :Sscratch<CR>
 map <Leader>N :Scratch<CR>
+
+" Map ,F to toggle indent folding
+map <leader>F :set foldenable!<CR>
+
+" Make command-line mimic bash-style shortcuts
+cmap <C-a> <C-b>
 
 " Crontab hijinks (prevents error when using "crontab -e")
 au BufEnter /private/tmp/crontab.* setl backupcopy=yes
@@ -267,9 +274,6 @@ set switchbuf=useopen,usetab
 set foldmethod=indent
 set nofoldenable
 set foldnestmax=1
-
-" Map ,f to toggle indent folding
-map <leader>f :set foldenable!<CR>
 
 " Wrapping sucks. I don't like it at all.
 set nowrap

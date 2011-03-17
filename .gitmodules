@@ -142,3 +142,6 @@
 	path = vim/bundle/conque
 	url = https://github.com/vim-scripts/Conque-Shell.git
     ignore = dirty
+[submodule "vim/bundle/vimbuddy"]
+	path = vim/bundle/vimbuddy
+	url = https://github.com/vim-scripts/vimbuddy.vim
