@@ -16,8 +16,8 @@ alias installh="brew install --HEAD"
 alias linelen='cut -c -$COLUMNS'
 alias webserver="python -m SimpleHTTPServer 2>/dev/null 1>/dev/null &"
 
-# Make vim always open in tabs
-alias mvim="mvim -p"
+# Make vim always open in tabs and in the same window
+alias mvim="mvim -p --remote-silent"
 alias vim="vim -p"
 
 # unnecessary masochism
