@@ -17,7 +17,7 @@ alias linelen='cut -c -$COLUMNS'
 alias webserver="python -m SimpleHTTPServer 2>/dev/null 1>/dev/null &"
 
 # Make vim always open in tabs and in the same window
-alias mvim="mvim -p --remote-silent"
+#alias mvim="mvim --remote-silent -p"
 alias vim="vim -p"
 
 # unnecessary masochism
@@ -73,4 +73,34 @@ export HISTCONTROL=erasedups
 export HISTSIZE=10000
 # Don't store commands matching the previous line in history
 #export HISTCONTROL=ignoredups
+
+function transparency {
+    if [ -z "$1" ]
+    then
+        ITERM_TRANS="0.5"
+    else
+        ITERM_TRANS=$1
+    fi
+    echo "
+    tell application \"iTerm2\"
+        set _session to current session of current terminal
+        tell _session
+            set transparency to \"$ITERM_TRANS\"
+        end tell
+    end tell
+    "
+    #" | osascript -
+}
+
+function opaque {
+    echo '
+    tell application "iTerm2"
+        set _session to current session of current terminal
+        tell _session
+            set transparency to "0"
+        end tell
+    end tell
+    '
+    #' | osascript -
+}
 

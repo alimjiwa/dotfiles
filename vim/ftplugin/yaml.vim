@@ -1,4 +1,4 @@
-set nosmartindent
-set nocindent
-set noautoindent
+setl nosmartindent
+setl nocindent
+setl noautoindent
 

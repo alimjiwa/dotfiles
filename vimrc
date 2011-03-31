@@ -32,13 +32,7 @@ if has('gui_running')
     " Scrollbars are for the weak-willed, use Ctrl-g instead
     set guioptions=egmt
 else
-    if $TERM == 'xterm-color'
-        " Set terminal to 256 colors. Don't use in iTerm-0.1, it's slow
-        set t_Co=256
-        colorscheme wombat256mod
-    else
-        colorscheme desert
-    endif
+    colorscheme desert
 endif
 
 " Quickly get out of insert mode without your fingers having to leave the
@@ -59,13 +53,19 @@ inoremap <Nul> <C-x><C-o>
 inoremap <C-Space> <C-x><C-o>
 
 " Toggle line wrap
-map <Leader>w :set wrap!<CR>
+map <Leader>W :set wrap!<CR>
 
 " Toggle paste mode
 map <Leader>pp :set paste!<CR>
 
 " Toggle highlight search
 map <Leader>h :set hls!<CR>
+
+" Toggle whitespace symbols
+nmap <leader>l :set list!<CR>
+
+" Toggle relative line numbers
+nmap <leader>r :set relativenumber!<CR>
 
 " Easier way of starting substitute
 map <Leader>s :s/
@@ -126,6 +126,9 @@ map <Leader>X <Plug>TaskList
 " New scratch buffer for notes
 map <Leader>n :Sscratch<CR>
 map <Leader>N :Scratch<CR>
+
+" EasyMotion
+let g:EasyMotion_do_mapping=0
 
 " Map ,F to toggle indent folding
 map <leader>F :set foldenable!<CR>
@@ -259,7 +262,7 @@ set shiftwidth=4
 set tabstop=4
 
 set smartindent
-set cindent
+set nocindent
 set autoindent
 set nobackup
 set showcmd
@@ -284,6 +287,7 @@ set laststatus=2
 set history=500
 set completeopt=menu,menuone
 set fillchars=vert:.,fold:~
+set listchars=tab:▸\ ,trail:·,eol:¬
 
 " Split windows open above and to the right
 set splitright
@@ -296,8 +300,18 @@ set backupskip=/tmp/*,/private/tmp/*"
 set iskeyword+=-
 set iskeyword+=_
 
+" Scrolling options - keep 4 lines around cursor
+set scrolloff=4
+
 " :Loremipsum plugin is more effective, but doing this is just hilarious
 iab lorem Lorem ipsum dolor sit amet, consectetur adipiscing elit
 iab llorem Lorem ipsum dolor sit amet, consectetur adipiscing elit.  Etiam lacus ligula, accumsan id imperdiet rhoncus, dapibus vitae arcu.  Nulla non quam erat, luctus consequat nisi
 iab lllorem Lorem ipsum dolor sit amet, consectetur adipiscing elit.  Etiam lacus ligula, accumsan id imperdiet rhoncus, dapibus vitae arcu.  Nulla non quam erat, luctus consequat nisi.  Integer hendrerit lacus sagittis erat fermentum tincidunt.  Cras vel dui neque.  In sagittis commodo luctus.  Mauris non metus dolor, ut suscipit dui.  Aliquam mauris lacus, laoreet et consequat quis, bibendum id ipsum.  Donec gravida, diam id imperdiet cursus, nunc nisl bibendum sapien, eget tempor neque elit in tortor
+
+" Convert TeX to PDF with <⌘ -C> and <Leader>t
+autocmd FileType tex nmap <D-C> :!texi2pdf -b -o $(basename % .tex).pdf % 1>/dev/null && open $(basename % .tex).pdf<CR><CR>
+autocmd FileType tex nmap <Leader>t :!texi2pdf -b -o $(basename % .tex).pdf %<CR>
+
+" Count number of words in a TeX document
+autocmd FileType tex nmap <Leader>wc :w !detex \| wc -w<CR>
 
