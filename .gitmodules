@@ -129,6 +129,8 @@
 [submodule "vim/bundle/cocoa"]
 	path = vim/bundle/cocoa
 	url = https://github.com/vim-scripts/cocoa.vim
+    ignore = dirty
 [submodule "vim/bundle/easymotion"]
 	path = vim/bundle/easymotion
 	url = https://github.com/Lokaltog/vim-easymotion.git
+    ignore = dirty
