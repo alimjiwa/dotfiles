@@ -128,7 +128,17 @@ map <Leader>n :Sscratch<CR>
 map <Leader>N :Scratch<CR>
 
 " EasyMotion
-let g:EasyMotion_do_mapping=0
+let g:EasyMotion_do_mapping=1
+let g:EasyMotion_binding_f = '`f'
+let g:EasyMotion_binding_F = '`F'
+let g:EasyMotion_binding_t = '`t'
+let g:EasyMotion_binding_T = '`T'
+let g:EasyMotion_binding_w = '`w'
+let g:EasyMotion_binding_b = '`b'
+let g:EasyMotion_binding_e = '`e'
+let g:EasyMotion_binding_ge = '`ge'
+let g:EasyMotion_binding_j = '`j'
+let g:EasyMotion_binding_k = '`k'
 
 " Map ,F to toggle indent folding
 map <leader>F :set foldenable!<CR>
