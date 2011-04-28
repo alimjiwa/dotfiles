@@ -44,7 +44,9 @@ alias inode="env NODE_NO_READLINE=1 rlwrap -p Green -S \"node >>> \" node"
 alias room="turksend 6,8"
 
 #Colorized custom prompt that shows Git branch
-export PS1='\[\033[00m\]\[\033[01;32m\]\u@\h: \[\033[01;36m\]\W$(__git_ps1 "(%s)")/ \[\033[00m\]$ '
+type -t __git_ps1
+[ $? -eq 0 ] && export PS1='\[\033[00m\]\[\033[01;32m\]\u@\h: \[\033[01;36m\]\W$(__git_ps1 "(%s)")/ \[\033[00m\]$ '
+[ $? -ne 0 ] && export PS1='\[\033[00m\]\[\033[01;32m\]\u@\h: \[\033[01;36m\]\W/ \[\033[00m\]$ '
 
 #colorize output from ls
 #export TERM='xterm-color'

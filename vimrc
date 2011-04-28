@@ -1,15 +1,48 @@
 
-" Pathogen - isolates all plugins inside ~/.vim/bundle like a boss
-let g:pathogen_disabled = []
-if version < 703
-    let g:pathogen_disabled += ['gundo']
-endif
-call pathogen#runtime_append_all_bundles() 
-call pathogen#helptags()
-
-
 " Root for most key bindings
 let mapleader = ","
+
+" Vundle setup
+set rtp+=~/.vim/vundle.git/ 
+call vundle#rc()
+
+" Colorscheme plugins
+Bundle 'altercation/vim-colors-solarized.git'
+"Bundle 'vim-scripts/molokai.git'
+"Bundle 'vim-scripts/desert256.vim.git'
+"Bundle 'tpope/vim-vividchalk.git'
+"Bundle 'vim-scripts/Wombat.git'
+"Bundle 'vim-scripts/wombat256.vim.git'
+
+" Other plugins
+Bundle 'scrooloose/nerdcommenter.git'
+Bundle 'scrooloose/nerdtree.git'
+Bundle 'vim-scripts/Gundo.git'
+Bundle 'kogakure/vim-sparkup'
+Bundle 'vim-scripts/SuperTab-continued..git'
+Bundle 'vim-scripts/ReplaceWithRegister.git'
+Bundle 'vim-scripts/cocoa.vim'
+Bundle 'vim-scripts/Conque-Shell.git'
+Bundle 'robbles/vim-easymotion.git'
+Bundle 'vim-scripts/vim-indent-object.git'
+Bundle 'vim-scripts/OOP-javascript-indentation.git'
+Bundle 'vim-scripts/Jinja'
+Bundle 'vim-scripts/less.vim.git'
+Bundle 'vim-scripts/Lucius.git'
+Bundle 'vim-scripts/Markdown.git'
+Bundle 'vim-scripts/narrow--Kramer.git'
+Bundle 'vim-scripts/Processing.git'
+Bundle 'vim-scripts/pyflakes.vim.git'
+Bundle 'vim-scripts/TaskList.vim.git'
+Bundle 'godlygeek/tabular.git'
+Bundle 'kchmck/vim-coffee-script.git'
+Bundle 'duff/vim-scratch.git'
+Bundle 'tpope/vim-repeat.git'
+Bundle 'tpope/vim-unimpaired.git'
+Bundle 'tpope/vim-surround.git'
+Bundle 'tpope/vim-abolish.git'
+Bundle 'tpope/vim-endwise.git'
+Bundle 'tpope/vim-fugitive.git'
 
 " Edit .vimrc in a new tab
 map <Leader>V :tabe $MYVIMRC<CR>
@@ -194,7 +227,6 @@ au BufNewFile,BufRead *.wsgi setf python
 au BufNewFile,BufRead *.info setf ini
 
 autocmd FileType javascript set omnifunc=javascriptcomplete#CompleteJS
-autocmd FileType html set omnifunc=htmlcomplete#CompleteTags
 autocmd FileType css set omnifunc=csscomplete#CompleteCSS
 autocmd FileType rst set textwidth=80
 autocmd FileType txt set textwidth=80
@@ -202,6 +234,7 @@ autocmd FileType markdown set textwidth=80
 autocmd Filetype java setlocal omnifunc=javacomplete#Complete 
 autocmd FileType php set omnifunc=phpcomplete#CompletePHP
 autocmd FileType python set omnifunc=pythoncomplete#Complete
+autocmd FileType html set omnifunc=htmlcomplete#CompleteTags
 
 " :make for Python (pyflakes is easier though)
 autocmd BufRead *.py set makeprg=python\ -c\ \"import\ py_compile,sys;\ sys.stderr=sys.stdout;\ py_compile.compile(r'%')\" 
