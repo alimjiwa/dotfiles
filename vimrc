@@ -324,7 +324,6 @@ set laststatus=2
 set history=500
 set completeopt=menu,menuone
 set fillchars=vert:.,fold:~
-set listchars=tab:▸\ ,trail:·,eol:¬
 
 " Split windows open above and to the right
 set splitright
