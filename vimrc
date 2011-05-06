@@ -23,7 +23,7 @@ Bundle 'vim-scripts/SuperTab-continued..git'
 Bundle 'vim-scripts/ReplaceWithRegister.git'
 Bundle 'vim-scripts/cocoa.vim'
 Bundle 'vim-scripts/Conque-Shell.git'
-Bundle 'robbles/vim-easymotion.git'
+Bundle 'Lokaltog/vim-easymotion.git'
 Bundle 'vim-scripts/vim-indent-object.git'
 Bundle 'vim-scripts/OOP-javascript-indentation.git'
 Bundle 'vim-scripts/Jinja'
@@ -43,6 +43,7 @@ Bundle 'tpope/vim-surround.git'
 Bundle 'tpope/vim-abolish.git'
 Bundle 'tpope/vim-endwise.git'
 Bundle 'tpope/vim-fugitive.git'
+Bundle 'vim-scripts/JSON.vim.git'
 
 " Edit .vimrc in a new tab
 map <Leader>V :tabe $MYVIMRC<CR>
@@ -162,18 +163,8 @@ map <Leader>X <Plug>TaskList
 map <Leader>n :Sscratch<CR>
 map <Leader>N :Scratch<CR>
 
-" EasyMotion
-let g:EasyMotion_do_mapping=1
-let g:EasyMotion_mapping_f = '`f'
-let g:EasyMotion_mapping_F = '`F'
-let g:EasyMotion_mapping_t = '`t'
-let g:EasyMotion_mapping_T = '`T'
-let g:EasyMotion_mapping_w = '`w'
-let g:EasyMotion_mapping_b = '`b'
-let g:EasyMotion_mapping_e = '`e'
-let g:EasyMotion_mapping_ge = '`ge'
-let g:EasyMotion_mapping_j = '`j'
-let g:EasyMotion_mapping_k = '`k'
+" EasyMotion triggers (`e, `w, `f, etc.)
+let g:EasyMotion_leader_key='`'
 
 " Map ,F to toggle indent folding
 map <leader>F :set foldenable!<CR>
@@ -220,6 +211,7 @@ command! -nargs=0 Q quit
 
 " Autocommands and filetype detection
 "au BufReadPost *.project bd | Project <afile>:p
+au BufReadPost *.json set ft=json
 au BufReadPost *.less set ft=less
 au BufReadPost buildfile set ft=ruby
 au BufNewFile,BufRead *.pde	setf arduino
@@ -346,7 +338,7 @@ set iskeyword+=-
 set iskeyword+=_
 
 " Scrolling options - keep 4 lines around cursor
-set scrolloff=4
+"set scrolloff=4
 
 " :Loremipsum plugin is more effective, but doing this is just hilarious
 iab lorem Lorem ipsum dolor sit amet, consectetur adipiscing elit
