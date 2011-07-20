@@ -6,44 +6,56 @@ let mapleader = ","
 set rtp+=~/.vim/vundle.git/ 
 call vundle#rc()
 
+" Allow comments after Bundle commands
+command! -nargs=+ Load Bundle split(<q-args>)[0]
+
 " Colorscheme plugins
-Bundle 'altercation/vim-colors-solarized.git'
-"Bundle 'vim-scripts/molokai.git'
-"Bundle 'vim-scripts/desert256.vim.git'
-"Bundle 'tpope/vim-vividchalk.git'
-"Bundle 'vim-scripts/Wombat.git'
-"Bundle 'vim-scripts/wombat256.vim.git'
+Load 'altercation/vim-colors-solarized.git'
+"Load 'vim-scripts/molokai.git'
+"Load 'vim-scripts/desert256.vim.git'
+"Load 'tpope/vim-vividchalk.git'
+"Load 'vim-scripts/Wombat.git'
+"Load 'vim-scripts/wombat256.vim.git'
+"Load 'vim-scripts/Lucius.git'
 
 " Other plugins
-Bundle 'scrooloose/nerdcommenter.git'
-Bundle 'scrooloose/nerdtree.git'
-Bundle 'vim-scripts/Gundo.git'
-Bundle 'kogakure/vim-sparkup'
-Bundle 'vim-scripts/SuperTab-continued..git'
-Bundle 'vim-scripts/ReplaceWithRegister.git'
-Bundle 'vim-scripts/cocoa.vim'
-Bundle 'vim-scripts/Conque-Shell.git'
-Bundle 'Lokaltog/vim-easymotion.git'
-Bundle 'vim-scripts/vim-indent-object.git'
-Bundle 'vim-scripts/OOP-javascript-indentation.git'
-Bundle 'vim-scripts/Jinja'
-Bundle 'vim-scripts/less.vim.git'
-Bundle 'vim-scripts/Lucius.git'
-Bundle 'vim-scripts/Markdown.git'
-Bundle 'vim-scripts/narrow--Kramer.git'
-Bundle 'vim-scripts/Processing.git'
-Bundle 'vim-scripts/pyflakes.vim.git'
-Bundle 'vim-scripts/TaskList.vim.git'
-Bundle 'godlygeek/tabular.git'
-Bundle 'kchmck/vim-coffee-script.git'
-Bundle 'duff/vim-scratch.git'
-Bundle 'tpope/vim-repeat.git'
-Bundle 'tpope/vim-unimpaired.git'
-Bundle 'tpope/vim-surround.git'
-Bundle 'tpope/vim-abolish.git'
-Bundle 'tpope/vim-endwise.git'
-Bundle 'tpope/vim-fugitive.git'
-Bundle 'vim-scripts/JSON.vim.git'
+Load 'scrooloose/nerdcommenter.git'
+Load 'scrooloose/nerdtree.git'
+Load 'vim-scripts/Gundo.git'
+Load 'kogakure/vim-sparkup'
+Load 'vim-scripts/SuperTab-continued..git'
+Load 'vim-scripts/ReplaceWithRegister.git'
+Load 'vim-scripts/cocoa.vim'
+Load 'vim-scripts/Conque-Shell.git'
+Load 'Lokaltog/vim-easymotion.git'
+Load 'vim-scripts/vim-indent-object.git'
+Load 'vim-scripts/OOP-javascript-indentation.git'
+Load 'vim-scripts/Jinja'
+Load 'vim-scripts/less.vim.git'
+Load 'vim-scripts/Markdown.git'
+Load 'vim-scripts/narrow--Kramer.git' " Narrow buffer temporarily
+Load 'vim-scripts/Processing.git'
+Load 'vim-scripts/TaskList.vim.git'
+Load 'kchmck/vim-coffee-script.git'
+Load 'godlygeek/tabular.git'  " Align text blocks with :Tabularize /pattern
+Load 'duff/vim-scratch.git'   " Create temporary scratch buffers with :Scratch
+Load 'tpope/vim-repeat.git'   " Repeats complex actions
+Load 'tpope/vim-surround.git' " Mappings for surrounding text with stuff
+Load 'tpope/vim-abolish.git'  " Smart case subsitute with :Subvert/Pattern/Repl/
+Load 'tpope/vim-endwise.git'  " Auto-close blocks for Ruby/Vim/Bash
+Load 'tpope/vim-ragtag.git'   " Bindings for HTML tags
+Load 'vim-scripts/JSON.vim.git'
+Load 'wookiehangover/jshint.vim'
+Load 'robbles/browserprint'
+Load 'vim-scripts/AutoTag'
+Load 'ap/vim-css-color'
+Load 'juvenn/mustache.vim'
+
+Load 'git://~/.vim/bundle/facade'
+
+if has('python')
+    Load 'vim-scripts/pyflakes.vim.git'
+endif
 
 " Edit .vimrc in a new tab
 map <Leader>V :tabe $MYVIMRC<CR>
@@ -58,7 +70,7 @@ if has('gui_running')
 
     " Customize startup size. Doesn't play nice with sessions
     "set lines=50
-    "set columns=90
+    set columns=90
 
     "set guifont=Inconsolata:h14
     set guifont=Droid\ Sans\ Mono:h14
@@ -197,6 +209,14 @@ os.environ['DJANGO_SETTINGS_MODULE'] = 'settings'
 def EvaluateCurrentRange(): 
     eval(compile('\n'.join(vim.current.range),'','exec'),globals()) 
 
+# Add the virtualenv's site-packages to vim path
+import vim
+if os.environ.get('VIRTUAL_ENV'):
+    project_base_dir = os.environ['VIRTUAL_ENV']
+    sys.path.insert(0, project_base_dir)
+    activate_this = os.path.join(project_base_dir, 'bin/activate_this.py')
+    execfile(activate_this, dict(__file__=activate_this))
+
 EOF
 map <C-h> :py EvaluateCurrentRange()<CR>
 endif
@@ -217,6 +237,7 @@ au BufReadPost buildfile set ft=ruby
 au BufNewFile,BufRead *.pde	setf arduino
 au BufNewFile,BufRead *.wsgi setf python
 au BufNewFile,BufRead *.info setf ini
+au BufReadPost *.mu set ft=mustache
 
 autocmd FileType javascript set omnifunc=javascriptcomplete#CompleteJS
 autocmd FileType css set omnifunc=csscomplete#CompleteCSS
@@ -231,6 +252,7 @@ autocmd FileType html set omnifunc=htmlcomplete#CompleteTags
 " :make for Python (pyflakes is easier though)
 autocmd BufRead *.py set makeprg=python\ -c\ \"import\ py_compile,sys;\ sys.stderr=sys.stdout;\ py_compile.compile(r'%')\" 
 autocmd BufRead *.py set efm=%C\ %.%#,%A\ \ File\ \"%f\"\\,\ line\ %l%.%#,%Z%[%^\ ]%\\@=%m 
+autocmd BufRead *Vagrantfile* set filetype=ruby
 
 " This function detects whether this is a Django/Liquid template, or a plain HTML file, and sets filetype accordingly
 fun! s:DetectHTMLVariant()
@@ -247,6 +269,15 @@ fun! s:DetectHTMLVariant()
     set ft=html
 endfun
 autocmd BufRead *.html,*.htm call s:DetectHTMLVariant()
+
+" Root the file hierarchy at a certain directory
+function! s:Root(...)
+    if !empty(a:0)
+        exec 'cd ' . a:0
+    endif
+    set noautochdir
+endfun
+command! -nargs=? Root call s:Root(<args>)
 
 " Project plugin
 let g:proj_window_width=32
@@ -351,3 +382,13 @@ autocmd FileType tex nmap <Leader>t :!texi2pdf -b -o $(basename % .tex).pdf %<CR
 " Count number of words in a TeX document
 autocmd FileType tex nmap <Leader>wc :w !detex \| wc -w<CR>
 
+" Simple re-format for minified Javascript
+command! UnMinify call UnMinify()
+function! UnMinify()
+    %s/{\ze[^\r\n]/{\r/g
+    %s/){/) {/g
+    %s/};\?\ze[^\r\n]/\0\r/g
+    %s/;\ze[^\r\n]/;\r/g
+    %s/[^\s]\zs[=&|]\+\ze[^\s]/ \0 /g
+    normal ggVG=
+endfunction

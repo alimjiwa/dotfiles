@@ -9,12 +9,22 @@
 #                               @
 
 # Handy shortcuts
-alias apt-list="dpkg --get-selections"
 alias pdb="python -m pdb"
 alias install="brew install"
 alias installh="brew install --HEAD"
+# Limit number of columns in output to size of terminal
 alias linelen='cut -c -$COLUMNS'
+# Start a web server in this directory
 alias webserver="python -m SimpleHTTPServer 2>/dev/null 1>/dev/null &"
+# Parse and pretty-print JSON
+alias json="python -m json.tool"
+# Get outer IP address for this machine
+alias ip="curl robutils.appspot.com/ip/"
+
+# directory shortcuts
+alias ll="ls -l"
+alias la="ls -a"
+alias cdd="cd -"
 
 # Make vim always open in tabs and in the same window
 #alias mvim="mvim --remote-silent -p"
@@ -44,7 +54,6 @@ alias inode="env NODE_NO_READLINE=1 rlwrap -p Green -S \"node >>> \" node"
 alias room="turksend 6,8"
 
 #Colorized custom prompt that shows Git branch
-type -t __git_ps1
 [ $? -eq 0 ] && export PS1='\[\033[00m\]\[\033[01;32m\]\u@\h: \[\033[01;36m\]\W$(__git_ps1 "(%s)")/ \[\033[00m\]$ '
 [ $? -ne 0 ] && export PS1='\[\033[00m\]\[\033[01;32m\]\u@\h: \[\033[01;36m\]\W/ \[\033[00m\]$ '
 
@@ -90,8 +99,7 @@ function transparency {
             set transparency to \"$ITERM_TRANS\"
         end tell
     end tell
-    "
-    #" | osascript -
+    " | osascript -
 }
 
 function opaque {
@@ -102,7 +110,6 @@ function opaque {
             set transparency to "0"
         end tell
     end tell
-    '
-    #' | osascript -
+    ' | osascript -
 }
 
