@@ -51,7 +51,7 @@ Load 'vim-scripts/AutoTag'
 Load 'ap/vim-css-color'
 Load 'juvenn/mustache.vim'
 
-Load 'git://~/.vim/bundle/facade'
+"Load 'git://~/.vim/bundle/facade'
 
 if has('python')
     Load 'vim-scripts/pyflakes.vim.git'
@@ -175,8 +175,12 @@ map <Leader>X <Plug>TaskList
 map <Leader>n :Sscratch<CR>
 map <Leader>N :Scratch<CR>
 
-" EasyMotion triggers (`e, `w, `f, etc.)
-let g:EasyMotion_leader_key='`'
+" Surround mappings for Django templates
+let g:surround_{char2nr("b")} = "{% block\1 \r..*\r &\1%}\r{% endblock %}"
+let g:surround_{char2nr("i")} = "{% if\1 \r..*\r &\1%}\r{% endif %}"
+let g:surround_{char2nr("w")} = "{% with\1 \r..*\r &\1%}\r{% endwith %}"
+let g:surround_{char2nr("c")} = "{% comment\1 \r..*\r &\1%}\r{% endcomment %}"
+let g:surround_{char2nr("F")} = "{% for\1 \r..*\r &\1%}\r{% endfor %}"
 
 " Map ,F to toggle indent folding
 map <leader>F :set foldenable!<CR>
@@ -239,20 +243,28 @@ au BufNewFile,BufRead *.wsgi setf python
 au BufNewFile,BufRead *.info setf ini
 au BufReadPost *.mu set ft=mustache
 
+" Completion functions (set to default with Ctrl-x Ctrl-o)
 autocmd FileType javascript set omnifunc=javascriptcomplete#CompleteJS
 autocmd FileType css set omnifunc=csscomplete#CompleteCSS
-autocmd FileType rst set textwidth=80
-autocmd FileType txt set textwidth=80
-autocmd FileType markdown set textwidth=80
 autocmd Filetype java setlocal omnifunc=javacomplete#Complete 
 autocmd FileType php set omnifunc=phpcomplete#CompletePHP
 autocmd FileType python set omnifunc=pythoncomplete#Complete
 autocmd FileType html set omnifunc=htmlcomplete#CompleteTags
 
-" :make for Python (pyflakes is easier though)
-autocmd BufRead *.py set makeprg=python\ -c\ \"import\ py_compile,sys;\ sys.stderr=sys.stdout;\ py_compile.compile(r'%')\" 
-autocmd BufRead *.py set efm=%C\ %.%#,%A\ \ File\ \"%f\"\\,\ line\ %l%.%#,%Z%[%^\ ]%\\@=%m 
+" indentation & write + load
+autocmd FileType ruby set shiftwidth=2 softtabstop=2 tabstop=2 | command -buffer W write | !ruby %
+autocmd FileType python set shiftwidth=4 softtabstop=4 tabstop=4 | command -buffer W write | !python %
+autocmd FileType javascript set shiftwidth=4 softtabstop=4 tabstop=4 | command -buffer W write | !node %
+autocmd FileType perl set shiftwidth=4 softtabstop=4 tabstop=4 | command -buffer W write | !perl %
+autocmd FileType java set shiftwidth=4 softtabstop=4 tabstop=4 | command -buffer W write | !javac %
+autocmd FileType lua set shiftwidth=4 softtabstop=4 tabstop=4 | command -buffer W write | !lua %
+autocmd FileType tex set shiftwidth=4 softtabstop=4 tabstop=4 | command -buffer W write | !pdflatex %
+autocmd FileType c,cpp set shiftwidth=4 softtabstop=4 tabstop=4 | command -buffer W write | !make
+autocmd FileType sh set shiftwidth=2 softtabstop=2 tabstop=2 | command -buffer W write | !./%
+autocmd FileType rst,txt,markdown set textwidth=80
 autocmd BufRead *Vagrantfile* set filetype=ruby
+
+autocmd FileType arduino,php,html,xhtml,css,xml set shiftwidth=4 softtabstop=4 tabstop=4
 
 " This function detects whether this is a Django/Liquid template, or a plain HTML file, and sets filetype accordingly
 fun! s:DetectHTMLVariant()
@@ -289,6 +301,7 @@ hi! link htmlLink Normal
 au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
 
 " Simplify saving and loading sessions
+set sessionoptions=sesdir,resize,tabpages,winpos,winsize " No variables, screws up scripts
 command! Pause mks! session.vim
 command! Resume so session.vim
 
@@ -312,6 +325,8 @@ set noautoread
 
 " This allows block selection to span outside of lines
 set virtualedit=block
+set conceallevel=2 " Allow hiding and replacing of syntax items
+set concealcursor=nc " Turn off conceal when in insert or visual mode
 set showcmd " Show (partial) command in status line.
 set showmatch " Show matching brackets.
 set smartcase " Do smart case matching
@@ -345,6 +360,9 @@ set switchbuf=useopen,usetab
 set foldmethod=indent
 set nofoldenable
 set foldnestmax=1
+
+au FileType javascript setlocal foldmethod=marker
+au FileType javascript setlocal foldmarker={,}
 
 " Wrapping sucks. I don't like it at all.
 set nowrap
@@ -392,3 +410,30 @@ function! UnMinify()
     %s/[^\s]\zs[=&|]\+\ze[^\s]/ \0 /g
     normal ggVG=
 endfunction
+
+" Automatic file templates in ~/.vim/skel based on extension
+autocmd! BufNewFile * call LoadTemplate()
+
+function! LoadTemplate()
+    silent! 0r ~/.vim/skel/tmpl.%:e
+
+    " Highlight %VAR% placeholders with the Todo color group
+    syn match Todo "%\u\+%" containedIn=ALL
+
+    " jump between %VAR% placeholders in Insert mode with <Ctrl-p>
+    inoremap <C-p> <ESC>/%\u\+%<cr>c/%/e<cr>
+endfunction
+
+" auto-chmod for scripts
+au FileChangedShell * let v:fcs_choice = (v:fcs_reason == "mode") ? "" : "ask" 
+autocmd BufWritePost * call NoExtNewFile()
+
+function! NoExtNewFile()
+    if getline(1) =~ "^#!.*/bin/" && match(getfperm(bufname('%')), 'x') == -1
+        if &filetype == ""
+            filetype detect
+        endif
+        silent !chmod a+x <afile>
+    endif
+endfunction
+
