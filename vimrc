@@ -152,6 +152,11 @@ let Tlist_Exit_OnlyWindow=1
 let Tlist_File_Fold_Auto_Close=1
 let Tlist_GainFocus_On_ToggleOpen=1
 
+" Make Supertab adjust completion type based on preceding context
+" Don't change this, it's bad ass
+let g:SuperTabDefaultCompletionType = "context"
+let g:SuperTabContextDefaultCompletionType = "c-n"
+
 " NERDtree
 map <Leader>f :NERDTreeToggle<CR>
 let NERDTreeQuitOnOpen=1
