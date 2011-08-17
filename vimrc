@@ -27,7 +27,6 @@ Load 'vim-scripts/SuperTab-continued..git'
 Load 'vim-scripts/ReplaceWithRegister.git'
 Load 'vim-scripts/cocoa.vim'
 Load 'vim-scripts/Conque-Shell.git'
-Load 'Lokaltog/vim-easymotion.git'
 Load 'vim-scripts/vim-indent-object.git'
 Load 'vim-scripts/OOP-javascript-indentation.git'
 Load 'vim-scripts/Jinja'
@@ -50,8 +49,8 @@ Load 'robbles/browserprint'
 Load 'vim-scripts/AutoTag'
 Load 'ap/vim-css-color'
 Load 'juvenn/mustache.vim'
-
-"Load 'git://~/.vim/bundle/facade'
+Load 'Raimondi/delimitMate'
+Load 'majutsushi/tagbar'
 
 if has('python')
     Load 'vim-scripts/pyflakes.vim.git'
@@ -69,8 +68,11 @@ if has('gui_running')
     set background=dark
 
     " Customize startup size. Doesn't play nice with sessions
-    "set lines=50
-    set columns=90
+    if !exists('g:sized_window')
+        "set lines=50
+        set columns=90
+        let g:sized_window=1
+    endif
 
     "set guifont=Inconsolata:h14
     set guifont=Droid\ Sans\ Mono:h14
@@ -142,20 +144,12 @@ vmap <silent> <leader>d "_d
 " Run scripts with Cmd-R
 map <D-r> :!./%<CR>
 
-" Run python programs with leader-P
-map <Leader>p :!/usr/bin/python %<CR>
-
 " Tag list
-map <Leader>T :Tlist<CR>
-let Tlist_Close_On_Select=1
-let Tlist_Exit_OnlyWindow=1
-let Tlist_File_Fold_Auto_Close=1
-let Tlist_GainFocus_On_ToggleOpen=1
+map <Leader>T :TagbarToggle<CR>
 
 " Make Supertab adjust completion type based on preceding context
 " Don't change this, it's bad ass
 let g:SuperTabDefaultCompletionType = "context"
-let g:SuperTabContextDefaultCompletionType = "c-n"
 
 " NERDtree
 map <Leader>f :NERDTreeToggle<CR>
@@ -205,7 +199,7 @@ map k gk
 """""""""""""  Python Code """"""""""""""""""""
 if has('python')
 python << EOF
-import sys, os, vim
+import sys, os, vim, re
 try:
     import ropevim
 except:
@@ -226,8 +220,26 @@ if os.environ.get('VIRTUAL_ENV'):
     activate_this = os.path.join(project_base_dir, 'bin/activate_this.py')
     execfile(activate_this, dict(__file__=activate_this))
 
+# Open the file referenced by an import statement
+def LoadImportedFile():
+    source, imports = vim.current.line.split('import')
+    if source:
+        # from x.y import z
+        source = source.split('from ')[1].replace(' ', '')
+        module = __import__(source, fromlist=[''])
+    else:
+        # import x.y
+        module = __import__(imports.replace(' ', ''))
+    path = module.__file__.replace('.pyc', '.py')
+    print 'Found path: %s' % path
+
+    # Edit file in a new tab
+    vim.command('tabe %s' % path.replace(' ', '\\ '))
+
 EOF
 map <C-h> :py EvaluateCurrentRange()<CR>
+command! LoadImportedFile py LoadImportedFile()
+
 endif
 """""""""""""  /Python Code  """""""""""""""""""
 
@@ -250,22 +262,22 @@ au BufReadPost *.mu set ft=mustache
 
 " Completion functions (set to default with Ctrl-x Ctrl-o)
 autocmd FileType javascript set omnifunc=javascriptcomplete#CompleteJS
-autocmd FileType css set omnifunc=csscomplete#CompleteCSS
+autocmd FileType css,less set omnifunc=csscomplete#CompleteCSS
 autocmd Filetype java setlocal omnifunc=javacomplete#Complete 
 autocmd FileType php set omnifunc=phpcomplete#CompletePHP
 autocmd FileType python set omnifunc=pythoncomplete#Complete
 autocmd FileType html set omnifunc=htmlcomplete#CompleteTags
 
 " indentation & write + load
-autocmd FileType ruby set shiftwidth=2 softtabstop=2 tabstop=2 | command -buffer W write | !ruby %
-autocmd FileType python set shiftwidth=4 softtabstop=4 tabstop=4 | command -buffer W write | !python %
-autocmd FileType javascript set shiftwidth=4 softtabstop=4 tabstop=4 | command -buffer W write | !node %
-autocmd FileType perl set shiftwidth=4 softtabstop=4 tabstop=4 | command -buffer W write | !perl %
-autocmd FileType java set shiftwidth=4 softtabstop=4 tabstop=4 | command -buffer W write | !javac %
-autocmd FileType lua set shiftwidth=4 softtabstop=4 tabstop=4 | command -buffer W write | !lua %
-autocmd FileType tex set shiftwidth=4 softtabstop=4 tabstop=4 | command -buffer W write | !pdflatex %
-autocmd FileType c,cpp set shiftwidth=4 softtabstop=4 tabstop=4 | command -buffer W write | !make
-autocmd FileType sh set shiftwidth=2 softtabstop=2 tabstop=2 | command -buffer W write | !./%
+autocmd FileType ruby set shiftwidth=2 softtabstop=2 tabstop=2 | command! -buffer W write | !ruby %
+autocmd FileType python set shiftwidth=4 softtabstop=4 tabstop=4 | command! -buffer W write | !python %
+autocmd FileType javascript set shiftwidth=4 softtabstop=4 tabstop=4 | command! -buffer W write | !node %
+autocmd FileType perl set shiftwidth=4 softtabstop=4 tabstop=4 | command! -buffer W write | !perl %
+autocmd FileType java set shiftwidth=4 softtabstop=4 tabstop=4 | command! -buffer W write | !javac %
+autocmd FileType lua set shiftwidth=4 softtabstop=4 tabstop=4 | command! -buffer W write | !lua %
+autocmd FileType tex set shiftwidth=4 softtabstop=4 tabstop=4 | command! -buffer W write | !pdflatex %
+autocmd FileType c,cpp set shiftwidth=4 softtabstop=4 tabstop=4 | command! -buffer W write | !make
+autocmd FileType sh set shiftwidth=2 softtabstop=2 tabstop=2 | command! -buffer W write | !./%
 autocmd FileType rst,txt,markdown set textwidth=80
 autocmd BufRead *Vagrantfile* set filetype=ruby
 
