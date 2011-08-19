@@ -51,6 +51,7 @@ Load 'ap/vim-css-color'
 Load 'juvenn/mustache.vim'
 Load 'Raimondi/delimitMate'
 Load 'majutsushi/tagbar'
+Load 'vim-scripts/Command-T'
 
 if has('python')
     Load 'vim-scripts/pyflakes.vim.git'
@@ -300,13 +301,14 @@ endfun
 autocmd BufRead *.html,*.htm call s:DetectHTMLVariant()
 
 " Root the file hierarchy at a certain directory
-function! s:Root(...)
-    if !empty(a:0)
-        exec 'cd ' . a:0
+function! s:Root(dir)
+    if !empty(a:dir)
+        exec 'cd ' . a:dir
     endif
     set noautochdir
 endfun
-command! -nargs=? Root call s:Root(<args>)
+command! -nargs=? -complete=dir Root call s:Root(<q-args>)
+command! Unroot set autochdir
 
 " Project plugin
 let g:proj_window_width=32
@@ -339,6 +341,11 @@ endif
 
 " Prompt for reload after external change
 set noautoread
+
+" Better completion in command-line
+"set wildmode=longest:full " only complete longest match
+set wildmode=full
+set wildmenu
 
 " This allows block selection to span outside of lines
 set virtualedit=block
