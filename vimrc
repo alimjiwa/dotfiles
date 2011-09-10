@@ -3,7 +3,8 @@
 let mapleader = ","
 
 " Vundle setup
-set rtp+=~/.vim/vundle.git/ 
+set rtp+=~/.vim/bundle/vundle/ 
+source ~/.vim/bundle/vundle/autoload/vundle.vim
 call vundle#rc()
 
 " Allow comments after Bundle commands
@@ -19,14 +20,14 @@ Load 'altercation/vim-colors-solarized.git'
 "Load 'vim-scripts/Lucius.git'
 
 " Other plugins
-Load 'scrooloose/nerdcommenter.git'
-Load 'scrooloose/nerdtree.git'
-Load 'vim-scripts/Gundo.git'
-Load 'kogakure/vim-sparkup'
-Load 'vim-scripts/SuperTab-continued..git'
-Load 'vim-scripts/ReplaceWithRegister.git'
-Load 'vim-scripts/cocoa.vim'
-Load 'vim-scripts/Conque-Shell.git'
+Load 'scrooloose/nerdcommenter.git' " Mappings for commenting
+Load 'scrooloose/nerdtree.git' " Alternate file explorer
+Load 'vim-scripts/Gundo.git' " Undo tree
+Load 'kogakure/vim-sparkup' " Expands CSS-like selectors into HTML
+Load 'vim-scripts/SuperTab-continued..git' " Better completion with Tab
+Load 'vim-scripts/ReplaceWithRegister.git' " Replace without losing register contents
+"Load 'vim-scripts/cocoa.vim'
+Load 'vim-scripts/Conque-Shell.git' " Open command-line shells in Vim splits
 Load 'vim-scripts/vim-indent-object.git'
 Load 'vim-scripts/OOP-javascript-indentation.git'
 Load 'vim-scripts/Jinja'
@@ -34,7 +35,7 @@ Load 'vim-scripts/less.vim.git'
 Load 'vim-scripts/Markdown.git'
 Load 'vim-scripts/narrow--Kramer.git' " Narrow buffer temporarily
 Load 'vim-scripts/Processing.git'
-Load 'vim-scripts/TaskList.vim.git'
+Load 'vim-scripts/TaskList.vim.git' " Collects all TODO and FIXME comments in a list
 Load 'kchmck/vim-coffee-script.git'
 Load 'godlygeek/tabular.git'  " Align text blocks with :Tabularize /pattern
 Load 'duff/vim-scratch.git'   " Create temporary scratch buffers with :Scratch
@@ -43,14 +44,15 @@ Load 'tpope/vim-surround.git' " Mappings for surrounding text with stuff
 Load 'tpope/vim-abolish.git'  " Smart case subsitute with :Subvert/Pattern/Repl/
 Load 'tpope/vim-endwise.git'  " Auto-close blocks for Ruby/Vim/Bash
 Load 'tpope/vim-ragtag.git'   " Bindings for HTML tags
+"Load 'tpope/vim-fugitive.git' " Git wrapper
 Load 'vim-scripts/JSON.vim.git'
-Load 'wookiehangover/jshint.vim'
-Load 'robbles/browserprint'
-Load 'vim-scripts/AutoTag'
-Load 'ap/vim-css-color'
+Load 'wookiehangover/jshint.vim.git' " Runs JSHint in the background and highlights errors
+Load 'vim-scripts/AutoTag' " Auto-closes HTML tags
+Load 'ap/vim-css-color' " Highlights CSS colors with their real color
+Load 'Raimondi/delimitMate' " Auto-closes brackets and other delimiters
+Load 'majutsushi/tagbar' " Tag list plugin that uses ctags to show variables, classes, methods, etc.
 Load 'juvenn/mustache.vim'
-Load 'Raimondi/delimitMate'
-Load 'majutsushi/tagbar'
+Load 'robbles/browserprint'
 Load 'vim-scripts/Command-T'
 
 if has('python')
@@ -68,7 +70,7 @@ if has('gui_running')
     colorscheme fruity
     set background=dark
 
-    " Customize startup size. Doesn't play nice with sessions
+    " Customize startup size.
     if !exists('g:sized_window')
         "set lines=50
         set columns=90
@@ -85,6 +87,11 @@ else
     set background=dark
     colorscheme solarized
 endif
+
+
+" Better completion in command-line
+"set wildmode=longest:full " only complete longest match
+set wildchar=<Tab> wildmenu wildmode=full
 
 " Quickly get out of insert mode without your fingers having to leave the
 " home row (either use 'jj' or 'jk')
@@ -146,11 +153,14 @@ vmap <silent> <leader>d "_d
 map <D-r> :!./%<CR>
 
 " Tag list
-map <Leader>T :TagbarToggle<CR>
+map <Leader>T :TagbarOpenAutoClose<CR>
 
+" Avoid bug in supertab with long lines by disabling <CR> mappings
+let g:SuperTabCrMapping=0
 " Make Supertab adjust completion type based on preceding context
 " Don't change this, it's bad ass
 let g:SuperTabDefaultCompletionType = "context"
+let g:SuperTabContextDefaultCompletionType = "<C-p>"
 
 " NERDtree
 map <Leader>f :NERDTreeToggle<CR>
@@ -181,6 +191,12 @@ let g:surround_{char2nr("i")} = "{% if\1 \r..*\r &\1%}\r{% endif %}"
 let g:surround_{char2nr("w")} = "{% with\1 \r..*\r &\1%}\r{% endwith %}"
 let g:surround_{char2nr("c")} = "{% comment\1 \r..*\r &\1%}\r{% endcomment %}"
 let g:surround_{char2nr("F")} = "{% for\1 \r..*\r &\1%}\r{% endfor %}"
+
+" delimitMate
+let delimitMate_expand_space=0
+let delimitMate_expand_cr=1
+imap <S-Tab> <Plug>delimitMateS-Tab
+imap <C-Tab> <Plug>delimitMateS-Tab
 
 " Map ,F to toggle indent folding
 map <leader>F :set foldenable!<CR>
@@ -263,7 +279,11 @@ au BufReadPost *.mu set ft=mustache
 
 " Completion functions (set to default with Ctrl-x Ctrl-o)
 autocmd FileType javascript set omnifunc=javascriptcomplete#CompleteJS
+autocmd FileType javascript call SuperTabSetDefaultCompletionType('<C-X><C-P>')
 autocmd FileType css,less set omnifunc=csscomplete#CompleteCSS
+autocmd FileType rst set textwidth=80
+autocmd FileType txt set textwidth=80
+autocmd FileType markdown set textwidth=80
 autocmd Filetype java setlocal omnifunc=javacomplete#Complete 
 autocmd FileType php set omnifunc=phpcomplete#CompletePHP
 autocmd FileType python set omnifunc=pythoncomplete#Complete
@@ -282,7 +302,7 @@ autocmd FileType sh set shiftwidth=2 softtabstop=2 tabstop=2 | command! -buffer 
 autocmd FileType rst,txt,markdown set textwidth=80
 autocmd BufRead *Vagrantfile* set filetype=ruby
 
-autocmd FileType arduino,php,html,xhtml,css,xml set shiftwidth=4 softtabstop=4 tabstop=4
+autocmd FileType arduino,php,html,xhtml,css,less,xml set shiftwidth=4 softtabstop=4 tabstop=4
 
 " This function detects whether this is a Django/Liquid template, or a plain HTML file, and sets filetype accordingly
 fun! s:DetectHTMLVariant()
@@ -321,8 +341,8 @@ au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g
 
 " Simplify saving and loading sessions
 set sessionoptions=sesdir,resize,tabpages,winpos,winsize " No variables, screws up scripts
-command! Pause mks! session.vim
-command! Resume so session.vim
+command! Pause mks! ~/session.vim
+command! Resume so ~/session.vim
 
 " Load indentation rules and plugins according to the detected filetype.
 filetype plugin indent on
@@ -342,10 +362,8 @@ endif
 " Prompt for reload after external change
 set noautoread
 
-" Better completion in command-line
-"set wildmode=longest:full " only complete longest match
-set wildmode=full
-set wildmenu
+" Assume UTF-8
+set encoding=utf8
 
 " This allows block selection to span outside of lines
 set virtualedit=block
