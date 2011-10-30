@@ -21,6 +21,25 @@ alias json="python -m json.tool"
 # Get outer IP address for this machine
 alias ip="curl robutils.appspot.com/ip/"
 
+# Todo.txt shortcuts and settings
+export TODOTXT_DEFAULT_ACTION=projectview
+export TODOTXT_SORT_COMMAND='env LC_COLLATE=C sort -k 2,2 -k 1,1n'
+alias t="todo"
+alias ta="todo add"
+alias tap="add_with_priority"
+function add_with_priority {
+  # Check arguments
+  if [ -z "$2" ]; then 
+    echo usage: add_with_priority \"Todo Item\" priority
+    return
+  fi
+
+  # Add a new todo and record the number
+  TODO_NUM=$(todo add $1 | grep -oE -m1 "^[0-9]+")
+  # Prioritize the todo with the second argument
+  todo pri $TODO_NUM $2
+}
+
 # directory shortcuts
 alias ll="ls -l"
 alias la="ls -a"
@@ -84,31 +103,38 @@ export HISTSIZE=10000
 # Don't store commands matching the previous line in history
 #export HISTCONTROL=ignoredups
 
-function transparency {
-    if [ -z "$1" ]
-    then
-        ITERM_TRANS="0.5"
+# Completion for Todo.txt
+_todo()
+{
+    local cur prev opts
+    COMPREPLY=()
+    cur="${COMP_WORDS[COMP_CWORD]}"
+    prev="${COMP_WORDS[COMP_CWORD-1]}"
+    COMMANDS="add a addto addm append app archive command del  \
+              rm depri dp do help list ls listall lsa listcon  \
+              lsc listfile lf listpri lsp listproj lsprj move  \
+              mv prepend prep pri p replace report"
+    # Add custom commands from add-ons, if installed. 
+    COMMANDS="$COMMANDS $('ls' ${TODO_ACTIONS_DIR:-$HOME/.todo.actions.d}/ 2>/dev/null)"
+    OPTS="-@ -@@ -+ -++ -d -f -h -p -P -PP -a -n -t -v -vv -V -x"
+    if [ "${cur:0:1}" == "+" ]; then
+        completions="$(t listproj)"
+    elif [ "${cur:0:1}" == "@" ]; then
+        completions="$(t listcon)"
+    elif [ $COMP_CWORD -eq 1 ]; then
+        completions="$COMMANDS $OPTS"
     else
-        ITERM_TRANS=$1
+        case "${prev}" in
+            -*) completions="$COMMANDS $OPTS";;
+            *)  return 0;;
+        esac
     fi
-    echo "
-    tell application \"iTerm2\"
-        set _session to current session of current terminal
-        tell _session
-            set transparency to \"$ITERM_TRANS\"
-        end tell
-    end tell
-    " | osascript -
+    COMPREPLY=( $( compgen -W "$completions" -- $cur ))
+    return 0
 }
-
-function opaque {
-    echo '
-    tell application "iTerm2"
-        set _session to current session of current terminal
-        tell _session
-            set transparency to "0"
-        end tell
-    end tell
-    ' | osascript -
-}
+complete -F _todo todo.sh
+# If you define an alias (e.g. "t") to todo.sh, you need to explicitly enable
+# completion for it, too: 
+complete -F _todo t
+complete -F _todo todo
 
