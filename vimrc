@@ -26,7 +26,7 @@ Load 'vim-scripts/Gundo.git' " Undo tree
 Load 'kogakure/vim-sparkup' " Expands CSS-like selectors into HTML
 Load 'vim-scripts/SuperTab-continued..git' " Better completion with Tab
 Load 'vim-scripts/ReplaceWithRegister.git' " Replace without losing register contents
-"Load 'vim-scripts/cocoa.vim'
+Load 'vim-scripts/cocoa.vim'
 Load 'vim-scripts/Conque-Shell.git' " Open command-line shells in Vim splits
 Load 'vim-scripts/vim-indent-object.git'
 Load 'vim-scripts/OOP-javascript-indentation.git'
@@ -42,7 +42,6 @@ Load 'duff/vim-scratch.git'   " Create temporary scratch buffers with :Scratch
 Load 'tpope/vim-repeat.git'   " Repeats complex actions
 Load 'tpope/vim-surround.git' " Mappings for surrounding text with stuff
 Load 'tpope/vim-abolish.git'  " Smart case subsitute with :Subvert/Pattern/Repl/
-Load 'tpope/vim-endwise.git'  " Auto-close blocks for Ruby/Vim/Bash
 Load 'tpope/vim-ragtag.git'   " Bindings for HTML tags
 "Load 'tpope/vim-fugitive.git' " Git wrapper
 Load 'vim-scripts/JSON.vim.git'
@@ -54,6 +53,7 @@ Load 'majutsushi/tagbar' " Tag list plugin that uses ctags to show variables, cl
 Load 'juvenn/mustache.vim'
 Load 'robbles/browserprint'
 Load 'vim-scripts/Command-T'
+Load 'jceb/vim-orgmode'
 
 if has('python')
     Load 'vim-scripts/pyflakes.vim.git'
@@ -105,10 +105,6 @@ map <D-Left> :tabp<CR>
 
 " Option/Alt-Left/Right cycles buffers
 au VimEnter * map <A-Right> :bn<CR> | map <A-Left> :bp<CR>
-
-" Ctrl-Space is omni-completion
-inoremap <Nul> <C-x><C-o>
-inoremap <C-Space> <C-x><C-o>
 
 " Toggle line wrap
 map <Leader>W :set wrap!<CR>
@@ -193,10 +189,11 @@ let g:surround_{char2nr("c")} = "{% comment\1 \r..*\r &\1%}\r{% endcomment %}"
 let g:surround_{char2nr("F")} = "{% for\1 \r..*\r &\1%}\r{% endfor %}"
 
 " delimitMate
-let delimitMate_expand_space=0
-let delimitMate_expand_cr=1
+let g:delimitMate_expand_space=0
+let g:delimitMate_expand_cr=1
 imap <S-Tab> <Plug>delimitMateS-Tab
 imap <C-Tab> <Plug>delimitMateS-Tab
+"let g:delimitMate_smart_matchpairs='[(){}\[\]"'']'
 
 " Map ,F to toggle indent folding
 map <leader>F :set foldenable!<CR>
@@ -226,8 +223,12 @@ except:
 os.environ['DJANGO_SETTINGS_MODULE'] = 'settings'
 
 # Evaluate Python code under cursor
-def EvaluateCurrentRange(): 
+def ExecCurrentRange(): 
     eval(compile('\n'.join(vim.current.range),'','exec'),globals()) 
+    
+def EvaluateCurrentRange(): 
+    result = eval(compile('\n'.join(vim.current.range),'','eval'),globals()) 
+    vim.current.line = str(result)
 
 # Add the virtualenv's site-packages to vim path
 import vim
@@ -254,7 +255,12 @@ def LoadImportedFile():
     vim.command('tabe %s' % path.replace(' ', '\\ '))
 
 EOF
-map <C-h> :py EvaluateCurrentRange()<CR>
+
+" Evaluate current range as python
+map <C-h> :py ExecCurrentRange()<CR>
+map <C-e> :py EvaluateCurrentRange()<CR>
+
+" Load the python import on this line
 command! LoadImportedFile py LoadImportedFile()
 
 endif
@@ -292,14 +298,15 @@ autocmd FileType html set omnifunc=htmlcomplete#CompleteTags
 " indentation & write + load
 autocmd FileType ruby set shiftwidth=2 softtabstop=2 tabstop=2 | command! -buffer W write | !ruby %
 autocmd FileType python set shiftwidth=4 softtabstop=4 tabstop=4 | command! -buffer W write | !python %
-autocmd FileType javascript set shiftwidth=4 softtabstop=4 tabstop=4 | command! -buffer W write | !node %
+autocmd FileType javascript set shiftwidth=2 softtabstop=2 tabstop=2 | command! -buffer W write | !node %
+autocmd FileType json set shiftwidth=2 softtabstop=2 tabstop=2
 autocmd FileType perl set shiftwidth=4 softtabstop=4 tabstop=4 | command! -buffer W write | !perl %
 autocmd FileType java set shiftwidth=4 softtabstop=4 tabstop=4 | command! -buffer W write | !javac %
 autocmd FileType lua set shiftwidth=4 softtabstop=4 tabstop=4 | command! -buffer W write | !lua %
 autocmd FileType tex set shiftwidth=4 softtabstop=4 tabstop=4 | command! -buffer W write | !pdflatex %
 autocmd FileType c,cpp set shiftwidth=4 softtabstop=4 tabstop=4 | command! -buffer W write | !make
 autocmd FileType sh set shiftwidth=2 softtabstop=2 tabstop=2 | command! -buffer W write | !./%
-autocmd FileType rst,txt,markdown set textwidth=80
+autocmd FileType rst,txt,markdown set textwidth=80 foldcolumn=1
 autocmd BufRead *Vagrantfile* set filetype=ruby
 
 autocmd FileType arduino,php,html,xhtml,css,less,xml set shiftwidth=4 softtabstop=4 tabstop=4
@@ -403,6 +410,10 @@ set foldmethod=indent
 set nofoldenable
 set foldnestmax=1
 
+" Do not automatically insert a comment leader after an enter
+au FileType * setlocal formatoptions-=r
+
+" Auto syntax folding for javascript by braces
 au FileType javascript setlocal foldmethod=marker
 au FileType javascript setlocal foldmarker={,}
 
