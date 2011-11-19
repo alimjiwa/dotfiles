@@ -43,7 +43,7 @@ Load 'tpope/vim-repeat.git'   " Repeats complex actions
 Load 'tpope/vim-surround.git' " Mappings for surrounding text with stuff
 Load 'tpope/vim-abolish.git'  " Smart case subsitute with :Subvert/Pattern/Repl/
 Load 'tpope/vim-ragtag.git'   " Bindings for HTML tags
-"Load 'tpope/vim-fugitive.git' " Git wrapper
+Load 'tpope/vim-fugitive.git' " Git wrapper
 Load 'vim-scripts/JSON.vim.git'
 Load 'wookiehangover/jshint.vim.git' " Runs JSHint in the background and highlights errors
 Load 'vim-scripts/AutoTag' " Auto-closes HTML tags
@@ -53,7 +53,15 @@ Load 'majutsushi/tagbar' " Tag list plugin that uses ctags to show variables, cl
 Load 'juvenn/mustache.vim'
 Load 'robbles/browserprint'
 Load 'vim-scripts/Command-T'
-Load 'jceb/vim-orgmode'
+"Load 'jceb/vim-orgmode'
+"Load 'vim-scripts/VimClojure'
+
+" Use <Leader>h[N] to create on-the-fly highlights
+nnoremap <silent> <leader>hh :execute 'match Special /\<<c-r><c-w>\>/'<cr>
+nnoremap <silent> <leader>h1 :execute 'match Special /\<<c-r><c-w>\>/'<cr>
+nnoremap <silent> <leader>h2 :execute '2match Special /\<<c-r><c-w>\>/'<cr>
+nnoremap <silent> <leader>h3 :execute '3match Special /\<<c-r><c-w>\>/'<cr>
+
 
 if has('python')
     Load 'vim-scripts/pyflakes.vim.git'
@@ -129,13 +137,13 @@ map <Leader>S :%s/
 nmap <silent> <leader>q :QFix<CR>
 command! -bang -nargs=? QFix call QFixToggle(<bang>0)
 function! QFixToggle(forced)
-  if exists("g:qfix_win") && a:forced == 0
-    cclose
-    unlet g:qfix_win
-  else
-    copen 10
-    let g:qfix_win = bufnr("$")
-  endif
+    if exists("g:qfix_win") && a:forced == 0
+        cclose
+        unlet g:qfix_win
+    else
+        copen 10
+        let g:qfix_win = bufnr("$")
+    endif
 endfunction
 
 " Who needs Shift, anyway?
@@ -201,6 +209,9 @@ map <leader>F :set foldenable!<CR>
 " Make command-line mimic bash-style shortcuts
 cmap <C-a> <C-b>
 
+" Stop annoying auto-indenting of comment/includes
+inoremap # X<BS>#
+
 " Crontab hijinks (prevents error when using "crontab -e")
 au BufEnter /private/tmp/crontab.* setl backupcopy=yes
 set backupskip=/tmp/*,/private/tmp/*
@@ -225,7 +236,7 @@ os.environ['DJANGO_SETTINGS_MODULE'] = 'settings'
 # Evaluate Python code under cursor
 def ExecCurrentRange(): 
     eval(compile('\n'.join(vim.current.range),'','exec'),globals()) 
-    
+
 def EvaluateCurrentRange(): 
     result = eval(compile('\n'.join(vim.current.range),'','eval'),globals()) 
     vim.current.line = str(result)
@@ -291,14 +302,14 @@ autocmd FileType rst set textwidth=80
 autocmd FileType txt set textwidth=80
 autocmd FileType markdown set textwidth=80
 autocmd Filetype java setlocal omnifunc=javacomplete#Complete 
-autocmd FileType php set omnifunc=phpcomplete#CompletePHP
+"autocmd FileType php set omnifunc=phpcomplete#CompletePHP
 autocmd FileType python set omnifunc=pythoncomplete#Complete
-autocmd FileType html set omnifunc=htmlcomplete#CompleteTags
+autocmd FileType html,php set omnifunc=htmlcomplete#CompleteTags | set cursorcolumn
 
 " indentation & write + load
 autocmd FileType ruby set shiftwidth=2 softtabstop=2 tabstop=2 | command! -buffer W write | !ruby %
 autocmd FileType python set shiftwidth=4 softtabstop=4 tabstop=4 | command! -buffer W write | !python %
-autocmd FileType javascript set shiftwidth=2 softtabstop=2 tabstop=2 | command! -buffer W write | !node %
+autocmd FileType javascript set shiftwidth=2 softtabstop=2 tabstop=2
 autocmd FileType json set shiftwidth=2 softtabstop=2 tabstop=2
 autocmd FileType perl set shiftwidth=4 softtabstop=4 tabstop=4 | command! -buffer W write | !perl %
 autocmd FileType java set shiftwidth=4 softtabstop=4 tabstop=4 | command! -buffer W write | !javac %
@@ -355,15 +366,15 @@ command! Resume so ~/session.vim
 filetype plugin indent on
 
 if exists('&autochdir')
-    " Pretty much essential, saves a lot of `cd`ing
-    set autochdir
+" Pretty much essential, saves a lot of `cd`ing
+set autochdir
 endif
 if exists('&colorcolumn')
-    " Great for keeping code wrapped neatly
-    set colorcolumn=80
+" Great for keeping code wrapped neatly
+set colorcolumn=80
 endif
 if exists('&cursorcolumn') && has('gui_running')
-    " set cursorcolumn
+" set cursorcolumn
 endif
 
 " Prompt for reload after external change
@@ -393,7 +404,7 @@ set expandtab
 set shiftwidth=4
 set tabstop=4
 
-set smartindent
+set nosmartindent
 set nocindent
 set autoindent
 set nobackup
@@ -489,4 +500,5 @@ function! NoExtNewFile()
         silent !chmod a+x <afile>
     endif
 endfunction
+
 
