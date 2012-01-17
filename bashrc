@@ -8,6 +8,9 @@
  #                             @ 
 #                               @
 
+# obviously
+set -o vi
+
 # Handy shortcuts
 alias pdb="python -m pdb"
 alias install="brew install"
@@ -63,14 +66,15 @@ alias gd="git diff"
 alias gco="git checkout"
 alias gb="git branch"
 
+# Process commands
+alias findp="pgrep -lf"
+alias killp="pkill -f"
+
 # Python startup script
 export PYTHONSTARTUP=$HOME/.pythonrc
 
 # Make node REPL less of a PITA
 alias inode="env NODE_NO_READLINE=1 rlwrap -p Green -S \"node >>> \" node"
-
-# Turk short commands
-alias room="turksend 6,8"
 
 #Colorized custom prompt that shows Git branch
 export PS1='\[\033[00m\]\[\033[01;32m\]\u@\h: \[\033[01;36m\]\W/ \[\033[00m\]$ '

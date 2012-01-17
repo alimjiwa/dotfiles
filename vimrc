@@ -15,8 +15,8 @@ Load 'altercation/vim-colors-solarized.git'
 "Load 'vim-scripts/molokai.git'
 "Load 'vim-scripts/desert256.vim.git'
 "Load 'tpope/vim-vividchalk.git'
-"Load 'vim-scripts/Wombat.git'
-"Load 'vim-scripts/wombat256.vim.git'
+Load 'vim-scripts/Wombat.git'
+Load 'vim-scripts/wombat256.vim.git'
 "Load 'vim-scripts/Lucius.git'
 
 " Other plugins
@@ -47,17 +47,17 @@ Load 'tpope/vim-fugitive.git' " Git wrapper
 Load 'vim-scripts/JSON.vim.git'
 Load 'wookiehangover/jshint.vim.git' " Runs JSHint in the background and highlights errors
 Load 'vim-scripts/AutoTag' " Auto-closes HTML tags
-Load 'ap/vim-css-color' " Highlights CSS colors with their real color
+"Load 'ap/vim-css-color' " Highlights CSS colors with their real color
 Load 'Raimondi/delimitMate' " Auto-closes brackets and other delimiters
 Load 'majutsushi/tagbar' " Tag list plugin that uses ctags to show variables, classes, methods, etc.
 Load 'juvenn/mustache.vim'
 Load 'robbles/browserprint'
-Load 'vim-scripts/Command-T'
+"Load 'vim-scripts/Command-T'
+Load 'vim-scripts/VOoM'
 "Load 'jceb/vim-orgmode'
 "Load 'vim-scripts/VimClojure'
 
 " Use <Leader>h[N] to create on-the-fly highlights
-nnoremap <silent> <leader>hh :execute 'match Special /\<<c-r><c-w>\>/'<cr>
 nnoremap <silent> <leader>h1 :execute 'match Special /\<<c-r><c-w>\>/'<cr>
 nnoremap <silent> <leader>h2 :execute '2match Special /\<<c-r><c-w>\>/'<cr>
 nnoremap <silent> <leader>h3 :execute '3match Special /\<<c-r><c-w>\>/'<cr>
@@ -149,10 +149,6 @@ endfunction
 " Who needs Shift, anyway?
 nnoremap ; :
 
-" Use ,d (or ,dd or ,dj or 20,dd) to delete a line without adding it to the
-nmap <silent> <leader>d "_d
-vmap <silent> <leader>d "_d
-
 " Run scripts with Cmd-R
 map <D-r> :!./%<CR>
 
@@ -167,8 +163,18 @@ let g:SuperTabDefaultCompletionType = "context"
 let g:SuperTabContextDefaultCompletionType = "<C-p>"
 
 " NERDtree
-map <Leader>f :NERDTreeToggle<CR>
-let NERDTreeQuitOnOpen=1
+"map <Leader>f :NERDTreeToggle<CR>
+"let NERDTreeQuitOnOpen=1
+
+" double percentage sign in command mode is expanded
+" to directory of current file - http://vimcasts.org/e/14
+cnoremap %% <C-R>=expand('%:h').'/'<cr>
+
+" Command-T project-wide search
+map <leader>f :CommandTFlush<cr>\|:CommandT<cr>
+
+" Command-T in current directory only
+map <leader>F :CommandTFlush<cr>\|:CommandT %%<cr>
 
 " Gundo
 map <Leader>g :GundoToggle<CR>
@@ -202,9 +208,6 @@ let g:delimitMate_expand_cr=1
 imap <S-Tab> <Plug>delimitMateS-Tab
 imap <C-Tab> <Plug>delimitMateS-Tab
 "let g:delimitMate_smart_matchpairs='[(){}\[\]"'']'
-
-" Map ,F to toggle indent folding
-map <leader>F :set foldenable!<CR>
 
 " Make command-line mimic bash-style shortcuts
 cmap <C-a> <C-b>
@@ -290,9 +293,12 @@ au BufReadPost *.json set ft=json
 au BufReadPost *.less set ft=less
 au BufReadPost buildfile set ft=ruby
 au BufNewFile,BufRead *.pde	setf arduino
+au BufNewFile,BufRead *.ino	setf arduino
 au BufNewFile,BufRead *.wsgi setf python
 au BufNewFile,BufRead *.info setf ini
 au BufReadPost *.mu set ft=mustache
+au BufReadPost Guardfile set ft=ruby
+autocmd BufRead Vagrantfile set filetype=ruby
 
 " Completion functions (set to default with Ctrl-x Ctrl-o)
 autocmd FileType javascript set omnifunc=javascriptcomplete#CompleteJS
@@ -304,23 +310,28 @@ autocmd FileType markdown set textwidth=80
 autocmd Filetype java setlocal omnifunc=javacomplete#Complete 
 "autocmd FileType php set omnifunc=phpcomplete#CompletePHP
 autocmd FileType python set omnifunc=pythoncomplete#Complete
-autocmd FileType html,php set omnifunc=htmlcomplete#CompleteTags | set cursorcolumn
+autocmd FileType html set omnifunc=htmlcomplete#CompleteTags | set cursorcolumn
 
 " indentation & write + load
-autocmd FileType ruby set shiftwidth=2 softtabstop=2 tabstop=2 | command! -buffer W write | !ruby %
-autocmd FileType python set shiftwidth=4 softtabstop=4 tabstop=4 | command! -buffer W write | !python %
+autocmd FileType ruby set shiftwidth=2 softtabstop=2 tabstop=2
+autocmd FileType python set shiftwidth=4 softtabstop=4 tabstop=4
 autocmd FileType javascript set shiftwidth=2 softtabstop=2 tabstop=2
 autocmd FileType json set shiftwidth=2 softtabstop=2 tabstop=2
-autocmd FileType perl set shiftwidth=4 softtabstop=4 tabstop=4 | command! -buffer W write | !perl %
-autocmd FileType java set shiftwidth=4 softtabstop=4 tabstop=4 | command! -buffer W write | !javac %
-autocmd FileType lua set shiftwidth=4 softtabstop=4 tabstop=4 | command! -buffer W write | !lua %
-autocmd FileType tex set shiftwidth=4 softtabstop=4 tabstop=4 | command! -buffer W write | !pdflatex %
-autocmd FileType c,cpp set shiftwidth=4 softtabstop=4 tabstop=4 | command! -buffer W write | !make
-autocmd FileType sh set shiftwidth=2 softtabstop=2 tabstop=2 | command! -buffer W write | !./%
+autocmd FileType perl set shiftwidth=4 softtabstop=4 tabstop=4
+autocmd FileType java set shiftwidth=4 softtabstop=4 tabstop=4
+autocmd FileType lua set shiftwidth=4 softtabstop=4 tabstop=4 
+autocmd FileType tex set shiftwidth=4 softtabstop=4 tabstop=4
+autocmd FileType c,cpp set shiftwidth=4 softtabstop=4 tabstop=4
+autocmd FileType sh set shiftwidth=2 softtabstop=2 tabstop=2
 autocmd FileType rst,txt,markdown set textwidth=80 foldcolumn=1
-autocmd BufRead *Vagrantfile* set filetype=ruby
 
 autocmd FileType arduino,php,html,xhtml,css,less,xml set shiftwidth=4 softtabstop=4 tabstop=4
+
+if exists('&autochdir')
+    " Change directory to first open file
+    set autochdir
+    set noautochdir
+endif
 
 " This function detects whether this is a Django/Liquid template, or a plain HTML file, and sets filetype accordingly
 fun! s:DetectHTMLVariant()
@@ -351,30 +362,27 @@ command! Unroot set autochdir
 " Project plugin
 let g:proj_window_width=32
 
-" HTML formatting ( get rid of shitty underlining )
+" HTML re-formatting
 hi! link htmlLink Normal
 
 " Jump to the last position when reopening a file
 au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
 
 " Simplify saving and loading sessions
-set sessionoptions=sesdir,resize,tabpages,winpos,winsize " No variables, screws up scripts
+set sessionoptions=curdir,resize,tabpages,winpos,winsize,folds " No variables, screws up scripts
 command! Pause mks! ~/session.vim
 command! Resume so ~/session.vim
 
 " Load indentation rules and plugins according to the detected filetype.
 filetype plugin indent on
 
-if exists('&autochdir')
-" Pretty much essential, saves a lot of `cd`ing
-set autochdir
-endif
 if exists('&colorcolumn')
-" Great for keeping code wrapped neatly
-set colorcolumn=80
+    " Great for keeping code wrapped neatly
+    set colorcolumn=80
 endif
 if exists('&cursorcolumn') && has('gui_running')
-" set cursorcolumn
+    " set cursorcolumn
+    hi CursorColumn guibg=#102227
 endif
 
 " Prompt for reload after external change
@@ -430,6 +438,7 @@ au FileType javascript setlocal foldmarker={,}
 
 " Wrapping sucks. I don't like it at all.
 set nowrap
+set linebreak
 
 " Way better than Vim's crazy default backspace setting
 set bs=indent,eol,start
