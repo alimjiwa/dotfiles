@@ -21,41 +21,27 @@ Load 'vim-scripts/wombat256.vim.git'
 
 " Other plugins
 Load 'scrooloose/nerdcommenter.git' " Mappings for commenting
-Load 'scrooloose/nerdtree.git' " Alternate file explorer
 Load 'vim-scripts/Gundo.git' " Undo tree
 Load 'kogakure/vim-sparkup' " Expands CSS-like selectors into HTML
 Load 'vim-scripts/SuperTab-continued..git' " Better completion with Tab
 Load 'vim-scripts/ReplaceWithRegister.git' " Replace without losing register contents
-Load 'vim-scripts/cocoa.vim'
-Load 'vim-scripts/Conque-Shell.git' " Open command-line shells in Vim splits
 Load 'vim-scripts/vim-indent-object.git'
 Load 'vim-scripts/OOP-javascript-indentation.git'
-Load 'vim-scripts/Jinja'
 Load 'vim-scripts/less.vim.git'
 Load 'vim-scripts/Markdown.git'
-Load 'vim-scripts/narrow--Kramer.git' " Narrow buffer temporarily
-Load 'vim-scripts/Processing.git'
-Load 'vim-scripts/TaskList.vim.git' " Collects all TODO and FIXME comments in a list
 Load 'kchmck/vim-coffee-script.git'
-Load 'godlygeek/tabular.git'  " Align text blocks with :Tabularize /pattern
-Load 'duff/vim-scratch.git'   " Create temporary scratch buffers with :Scratch
 Load 'tpope/vim-repeat.git'   " Repeats complex actions
 Load 'tpope/vim-surround.git' " Mappings for surrounding text with stuff
 Load 'tpope/vim-abolish.git'  " Smart case subsitute with :Subvert/Pattern/Repl/
-Load 'tpope/vim-ragtag.git'   " Bindings for HTML tags
 Load 'tpope/vim-fugitive.git' " Git wrapper
 Load 'vim-scripts/JSON.vim.git'
 Load 'wookiehangover/jshint.vim.git' " Runs JSHint in the background and highlights errors
-Load 'vim-scripts/AutoTag' " Auto-closes HTML tags
-"Load 'ap/vim-css-color' " Highlights CSS colors with their real color
+"Load 'vim-scripts/AutoTag' " Auto-closes HTML tags
 Load 'Raimondi/delimitMate' " Auto-closes brackets and other delimiters
 Load 'majutsushi/tagbar' " Tag list plugin that uses ctags to show variables, classes, methods, etc.
 Load 'juvenn/mustache.vim'
 Load 'robbles/browserprint'
 "Load 'vim-scripts/Command-T'
-Load 'vim-scripts/VOoM'
-"Load 'jceb/vim-orgmode'
-"Load 'vim-scripts/VimClojure'
 
 " Use <Leader>h[N] to create on-the-fly highlights
 nnoremap <silent> <leader>h1 :execute 'match Special /\<<c-r><c-w>\>/'<cr>
@@ -64,7 +50,7 @@ nnoremap <silent> <leader>h3 :execute '3match Special /\<<c-r><c-w>\>/'<cr>
 
 
 if has('python')
-    Load 'vim-scripts/pyflakes.vim.git'
+    Load 'vim-scripts/pyflakes.vim.git' " Auto highlighting of errors with pyflakes
 endif
 
 " Edit .vimrc in a new tab
@@ -110,9 +96,6 @@ map <Tab> :tabn<CR>
 map <S-Tab> :tabp<CR>
 map <D-Right> :tabn<CR>
 map <D-Left> :tabp<CR>
-
-" Option/Alt-Left/Right cycles buffers
-au VimEnter * map <A-Right> :bn<CR> | map <A-Left> :bp<CR>
 
 " Toggle line wrap
 map <Leader>W :set wrap!<CR>
@@ -162,38 +145,19 @@ let g:SuperTabCrMapping=0
 let g:SuperTabDefaultCompletionType = "context"
 let g:SuperTabContextDefaultCompletionType = "<C-p>"
 
-" NERDtree
-"map <Leader>f :NERDTreeToggle<CR>
-"let NERDTreeQuitOnOpen=1
-
 " double percentage sign in command mode is expanded
 " to directory of current file - http://vimcasts.org/e/14
 cnoremap %% <C-R>=expand('%:h').'/'<cr>
 
-" Command-T project-wide search
-map <leader>f :CommandTFlush<cr>\|:CommandT<cr>
-
 " Command-T in current directory only
-map <leader>F :CommandTFlush<cr>\|:CommandT %%<cr>
+map <leader>f :CommandTFlush<cr>\|:CommandT %%<cr>
+
+" Command-T project-wide search
+map <leader>F :CommandTFlush<cr>\|:CommandT<cr>
 
 " Gundo
 map <Leader>g :GundoToggle<CR>
 let g:gundo_help=0
-
-" ConqueTerm
-let g:ConqueTerm_ToggleKey = '<F8>'
-let g:ConqueTerm_Color = 1
-let g:ConqueTerm_TERM = 'xterm-256'
-let g:ConqueTerm_Syntax = 'bash'
-let g:ConqueTerm_CloseOnEnd = 1
-
-" Tasks
-let g:tlWindowPosition = 1
-map <Leader>X <Plug>TaskList
-
-" New scratch buffer for notes
-map <Leader>n :Sscratch<CR>
-map <Leader>N :Scratch<CR>
 
 " Surround mappings for Django templates
 let g:surround_{char2nr("b")} = "{% block\1 \r..*\r &\1%}\r{% endblock %}"
@@ -207,7 +171,7 @@ let g:delimitMate_expand_space=0
 let g:delimitMate_expand_cr=1
 imap <S-Tab> <Plug>delimitMateS-Tab
 imap <C-Tab> <Plug>delimitMateS-Tab
-"let g:delimitMate_smart_matchpairs='[(){}\[\]"'']'
+let g:delimitMate_smart_matchpairs='[(){}\[\]"'']'
 
 " Make command-line mimic bash-style shortcuts
 cmap <C-a> <C-b>
@@ -227,11 +191,6 @@ map k gk
 """""""""""""  Python Code """"""""""""""""""""
 if has('python')
 python << EOF
-import sys, os, vim, re
-try:
-    import ropevim
-except:
-    pass
 
 # Setup Django for model completion
 os.environ['DJANGO_SETTINGS_MODULE'] = 'settings'
@@ -263,10 +222,9 @@ def LoadImportedFile():
         # import x.y
         module = __import__(imports.replace(' ', ''))
     path = module.__file__.replace('.pyc', '.py')
-    print 'Found path: %s' % path
 
-    # Edit file in a new tab
-    vim.command('tabe %s' % path.replace(' ', '\\ '))
+    # Edit file
+    vim.command('e %s' % path.replace(' ', '\\ '))
 
 EOF
 
@@ -279,9 +237,6 @@ command! LoadImportedFile py LoadImportedFile()
 
 endif
 """""""""""""  /Python Code  """""""""""""""""""
-
-" snipMate snippets
-let g:snips_author = "Rob O'Dwyer"
 
 " Really handy if you often end up doing :W by accident
 command! -nargs=* W write <args>
@@ -312,7 +267,7 @@ autocmd Filetype java setlocal omnifunc=javacomplete#Complete
 autocmd FileType python set omnifunc=pythoncomplete#Complete
 autocmd FileType html set omnifunc=htmlcomplete#CompleteTags | set cursorcolumn
 
-" indentation & write + load
+" Setup different indentations for filetypes
 autocmd FileType ruby set shiftwidth=2 softtabstop=2 tabstop=2
 autocmd FileType python set shiftwidth=4 softtabstop=4 tabstop=4
 autocmd FileType javascript set shiftwidth=2 softtabstop=2 tabstop=2
@@ -326,6 +281,9 @@ autocmd FileType sh set shiftwidth=2 softtabstop=2 tabstop=2
 autocmd FileType rst,txt,markdown set textwidth=80 foldcolumn=1
 
 autocmd FileType arduino,php,html,xhtml,css,less,xml set shiftwidth=4 softtabstop=4 tabstop=4
+
+" Jump to the last position when reopening a file
+au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
 
 if exists('&autochdir')
     " Change directory to first open file
@@ -349,24 +307,8 @@ fun! s:DetectHTMLVariant()
 endfun
 autocmd BufRead *.html,*.htm call s:DetectHTMLVariant()
 
-" Root the file hierarchy at a certain directory
-function! s:Root(dir)
-    if !empty(a:dir)
-        exec 'cd ' . a:dir
-    endif
-    set noautochdir
-endfun
-command! -nargs=? -complete=dir Root call s:Root(<q-args>)
-command! Unroot set autochdir
-
-" Project plugin
-let g:proj_window_width=32
-
 " HTML re-formatting
 hi! link htmlLink Normal
-
-" Jump to the last position when reopening a file
-au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
 
 " Simplify saving and loading sessions
 set sessionoptions=curdir,resize,tabpages,winpos,winsize,folds " No variables, screws up scripts
@@ -375,14 +317,11 @@ command! Resume so ~/session.vim
 
 " Load indentation rules and plugins according to the detected filetype.
 filetype plugin indent on
+syntax on
 
 if exists('&colorcolumn')
     " Great for keeping code wrapped neatly
     set colorcolumn=80
-endif
-if exists('&cursorcolumn') && has('gui_running')
-    " set cursorcolumn
-    hi CursorColumn guibg=#102227
 endif
 
 " Prompt for reload after external change
@@ -391,6 +330,10 @@ set noautoread
 " Assume UTF-8
 set encoding=utf8
 
+" Show line numbers
+set number
+set norelativenumber
+
 " This allows block selection to span outside of lines
 set virtualedit=block
 set conceallevel=2 " Allow hiding and replacing of syntax items
@@ -398,11 +341,8 @@ set concealcursor=nc " Turn off conceal when in insert or visual mode
 set showcmd " Show (partial) command in status line.
 set showmatch " Show matching brackets.
 set smartcase " Do smart case matching
-"set incsearch " Incremental search
-"set autowrite " Automatically save before commands like :next and :make
 set hidden " Hide buffers when they are abandoned
 set mouse=a " Enable mouse usage (all modes)
-syntax on
 set textwidth=0
 set visualbell
 
@@ -418,8 +358,6 @@ set autoindent
 set nobackup
 set showcmd
 set noswapfile
-"set hlsearch
-"set incsearch
 set viminfo+=h
 set nocp
 set switchbuf=useopen,usetab
@@ -442,6 +380,7 @@ set linebreak
 
 " Way better than Vim's crazy default backspace setting
 set bs=indent,eol,start
+
 set laststatus=2
 set history=500
 set completeopt=menu,menuone
@@ -454,24 +393,14 @@ set nosplitbelow
 " No backups for temp files
 set backupskip=/tmp/*,/private/tmp/*" 
 
-" Make - and _ part of a word for text objects, start/end of word
+" Make - and _ part of a word for text objects
 set iskeyword+=-
 set iskeyword+=_
-
-" Scrolling options - keep 4 lines around cursor
-"set scrolloff=4
 
 " :Loremipsum plugin is more effective, but doing this is just hilarious
 iab lorem Lorem ipsum dolor sit amet, consectetur adipiscing elit
 iab llorem Lorem ipsum dolor sit amet, consectetur adipiscing elit.  Etiam lacus ligula, accumsan id imperdiet rhoncus, dapibus vitae arcu.  Nulla non quam erat, luctus consequat nisi
 iab lllorem Lorem ipsum dolor sit amet, consectetur adipiscing elit.  Etiam lacus ligula, accumsan id imperdiet rhoncus, dapibus vitae arcu.  Nulla non quam erat, luctus consequat nisi.  Integer hendrerit lacus sagittis erat fermentum tincidunt.  Cras vel dui neque.  In sagittis commodo luctus.  Mauris non metus dolor, ut suscipit dui.  Aliquam mauris lacus, laoreet et consequat quis, bibendum id ipsum.  Donec gravida, diam id imperdiet cursus, nunc nisl bibendum sapien, eget tempor neque elit in tortor
-
-" Convert TeX to PDF with <⌘ -C> and <Leader>t
-autocmd FileType tex nmap <D-C> :!texi2pdf -b -o $(basename % .tex).pdf % 1>/dev/null && open $(basename % .tex).pdf<CR><CR>
-autocmd FileType tex nmap <Leader>t :!texi2pdf -b -o $(basename % .tex).pdf %<CR>
-
-" Count number of words in a TeX document
-autocmd FileType tex nmap <Leader>wc :w !detex \| wc -w<CR>
 
 " Simple re-format for minified Javascript
 command! UnMinify call UnMinify()
@@ -482,19 +411,6 @@ function! UnMinify()
     %s/;\ze[^\r\n]/;\r/g
     %s/[^\s]\zs[=&|]\+\ze[^\s]/ \0 /g
     normal ggVG=
-endfunction
-
-" Automatic file templates in ~/.vim/skel based on extension
-autocmd! BufNewFile * call LoadTemplate()
-
-function! LoadTemplate()
-    silent! 0r ~/.vim/skel/tmpl.%:e
-
-    " Highlight %VAR% placeholders with the Todo color group
-    syn match Todo "%\u\+%" containedIn=ALL
-
-    " jump between %VAR% placeholders in Insert mode with <Ctrl-p>
-    inoremap <C-p> <ESC>/%\u\+%<cr>c/%/e<cr>
 endfunction
 
 " auto-chmod for scripts
