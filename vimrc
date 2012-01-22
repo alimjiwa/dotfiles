@@ -191,6 +191,7 @@ map k gk
 """""""""""""  Python Code """"""""""""""""""""
 if has('python')
 python << EOF
+import vim,os
 
 # Setup Django for model completion
 os.environ['DJANGO_SETTINGS_MODULE'] = 'settings'
