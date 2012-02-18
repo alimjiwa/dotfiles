@@ -35,7 +35,6 @@ source $ZSH/oh-my-zsh.sh
 
 # zsh options
 unsetopt correct_all
-set -o vi
 
 # Customize to your needs...
 
@@ -144,4 +143,22 @@ alias monitorhttp="sudo tcpdump -A -i en1 'tcp port 80 and (((ip[2:2] - ((ip[0]&
 
 # Makes Django recognize settings.py in current directory (why the fuck is this not default?)
 export DJANGO_SETTINGS_MODULE=settings
+
+# Virtualenvwrapper
+export WORKON_HOME=$HOME/.virtualenvs
+export VIRTUALENVWRAPPER_PYTHON=`which python2.7`
+export PROJECT_HOME=$HOME/Documents/Django
+source `which virtualenvwrapper.sh`
+
+# vi mode with vim-like backspace
+bindkey -v
+bindkey "^H" backward-delete-char
+bindkey "^?" backward-delete-char
+
+# History search on up-down
+bindkey "^[[A" history-beginning-search-backward
+bindkey "^[[B" history-beginning-search-forward
+
+bindkey "^A" vi-beginning-of-line
+bindkey "^E" vi-end-of-line
 

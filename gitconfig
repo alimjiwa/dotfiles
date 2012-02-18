@@ -3,5 +3,6 @@
 	email = odwyerrob@gmail.com
 [core]
 	autocrlf = input
+	excludesfile = /Users/rob/.gitignore
 [merge]
 	tool = vimdiff

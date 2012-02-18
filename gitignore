@@ -1,1 +1,3 @@
 vim/bundle/**
+.vagrant
+.DS_STORE

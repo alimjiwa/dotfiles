@@ -21,6 +21,7 @@ Load 'vim-scripts/wombat256.vim.git'
 
 " Other plugins
 Load 'scrooloose/nerdcommenter.git' " Mappings for commenting
+Load 'scrooloose/syntastic.git' " awesome syntax validation
 Load 'vim-scripts/Gundo.git' " Undo tree
 Load 'kogakure/vim-sparkup' " Expands CSS-like selectors into HTML
 Load 'vim-scripts/SuperTab-continued..git' " Better completion with Tab
@@ -41,6 +42,7 @@ Load 'Raimondi/delimitMate' " Auto-closes brackets and other delimiters
 Load 'majutsushi/tagbar' " Tag list plugin that uses ctags to show variables, classes, methods, etc.
 Load 'juvenn/mustache.vim'
 Load 'robbles/browserprint'
+Load 'jeffkreeftmeijer/vim-numbertoggle'
 "Load 'vim-scripts/Command-T'
 
 " Use <Leader>h[N] to create on-the-fly highlights
@@ -49,9 +51,6 @@ nnoremap <silent> <leader>h2 :execute '2match Special /\<<c-r><c-w>\>/'<cr>
 nnoremap <silent> <leader>h3 :execute '3match Special /\<<c-r><c-w>\>/'<cr>
 
 
-if has('python')
-    Load 'vim-scripts/pyflakes.vim.git' " Auto highlighting of errors with pyflakes
-endif
 
 " Edit .vimrc in a new tab
 map <Leader>V :tabe $MYVIMRC<CR>
@@ -104,17 +103,18 @@ map <Leader>W :set wrap!<CR>
 map <Leader>pp :set paste!<CR>
 
 " Toggle highlight search
-map <Leader>h :set hls!<CR>
+map <Leader>hh :set hls!<CR>
 
 " Toggle whitespace symbols
 nmap <leader>l :set list!<CR>
 
-" Toggle relative line numbers
-nmap <leader>r :set relativenumber!<CR>
-
 " Easier way of starting substitute
 map <Leader>s :s/
 map <Leader>S :%s/
+vmap <Leader>s y:s/<C-r>"/
+vmap <Leader>S y:%s/<C-r>"/
+map <Leader>ws :s/<C-r><C-w>/
+map <Leader>wS :%s/<C-r><C-w>/
 
 " Tame the quickfix window (open/close using ,q)
 nmap <silent> <leader>q :QFix<CR>
@@ -137,6 +137,10 @@ map <D-r> :!./%<CR>
 
 " Tag list
 map <Leader>T :TagbarOpenAutoClose<CR>
+
+" Syntastic options
+let g:syntastic_check_on_open=1
+let g:syntastic_auto_jump=1
 
 " Avoid bug in supertab with long lines by disabling <CR> mappings
 let g:SuperTabCrMapping=0
@@ -171,7 +175,7 @@ let g:delimitMate_expand_space=0
 let g:delimitMate_expand_cr=1
 imap <S-Tab> <Plug>delimitMateS-Tab
 imap <C-Tab> <Plug>delimitMateS-Tab
-let g:delimitMate_smart_matchpairs='[(){}\[\]"'']'
+"let g:delimitMate_smart_matchpairs='[(){}\[\]"'']'
 
 " Make command-line mimic bash-style shortcuts
 cmap <C-a> <C-b>
@@ -331,9 +335,9 @@ set noautoread
 " Assume UTF-8
 set encoding=utf8
 
-" Show line numbers
+" Show relative line numbers
 set number
-set norelativenumber
+set relativenumber
 
 " This allows block selection to span outside of lines
 set virtualedit=block
