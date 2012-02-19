@@ -111,8 +111,6 @@ nmap <leader>l :set list!<CR>
 " Easier way of starting substitute
 map <Leader>s :s/
 map <Leader>S :%s/
-vmap <Leader>s y:s/<C-r>"/
-vmap <Leader>S y:%s/<C-r>"/
 map <Leader>ws :s/<C-r><C-w>/
 map <Leader>wS :%s/<C-r><C-w>/
 
@@ -140,7 +138,8 @@ map <Leader>T :TagbarOpenAutoClose<CR>
 
 " Syntastic options
 let g:syntastic_check_on_open=1
-let g:syntastic_auto_jump=1
+let g:syntastic_auto_jump=0
+let g:syntastic_python_checker='flake8 --ignore=E302,E303,W291,W391 --max-complexity=6'
 
 " Avoid bug in supertab with long lines by disabling <CR> mappings
 let g:SuperTabCrMapping=0
