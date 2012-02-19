@@ -42,7 +42,6 @@ Load 'Raimondi/delimitMate' " Auto-closes brackets and other delimiters
 Load 'majutsushi/tagbar' " Tag list plugin that uses ctags to show variables, classes, methods, etc.
 Load 'juvenn/mustache.vim'
 Load 'robbles/browserprint'
-Load 'jeffkreeftmeijer/vim-numbertoggle'
 "Load 'vim-scripts/Command-T'
 
 " Use <Leader>h[N] to create on-the-fly highlights
@@ -172,9 +171,9 @@ let g:surround_{char2nr("F")} = "{% for\1 \r..*\r &\1%}\r{% endfor %}"
 " delimitMate
 let g:delimitMate_expand_space=0
 let g:delimitMate_expand_cr=1
+let g:delimitMate_nesting_quotes=['"']
 imap <S-Tab> <Plug>delimitMateS-Tab
 imap <C-Tab> <Plug>delimitMateS-Tab
-"let g:delimitMate_smart_matchpairs='[(){}\[\]"'']'
 
 " Make command-line mimic bash-style shortcuts
 cmap <C-a> <C-b>
